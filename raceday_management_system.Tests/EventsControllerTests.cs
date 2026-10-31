@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using raceday_management_system.Controllers;
 using raceday_management_system.Database.Interfaces;
+using raceday_management_system.Services;
 using Xunit;
 
 namespace raceday_management_system.Tests
@@ -9,14 +11,26 @@ namespace raceday_management_system.Tests
     public class EventsControllerTests
     {//start of class
 
+        // Helper method to instantiate the controller with the required dependencies
+        private events create_controller(Mock<Ievents_connection> mock_db)
+        {
+            // Setup the mock configuration so the blob service doesn't crash
+            var mock_config = new Mock<IConfiguration>();
+            mock_config.Setup(c => c["AzureStorage:ConnectionString"]).Returns("DefaultEndpointsProtocol=https;AccountName=dummy;AccountKey=dummy;EndpointSuffix=core.windows.net");
+            mock_config.Setup(c => c["AzureStorage:ContainerName"]).Returns("dummy-container");
+
+            var blob_service = new blob_storage_service(mock_config.Object);
+            return new events(mock_db.Object, blob_service);
+        }
+
         //Participant cannot create event (403)
         [Fact]
         public void participant_cannot_create_event()
         {//start of test
-
             //arrange
             var mock_db = new Mock<Ievents_connection>();
-            var controller = new events(mock_db.Object);
+            var controller = create_controller(mock_db);
+
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = SessionHelper.make_context("Participant", 5)
@@ -30,14 +44,12 @@ namespace raceday_management_system.Tests
             //assert
             var status_result = Assert.IsType<ObjectResult>(result);
             Assert.Equal(403, status_result.StatusCode);
-
         }//end of test
 
         //Organiser can create event (201)
         [Fact]
         public void organiser_can_create_event()
         {//start of test
-
             //arrange
             var mock_db = new Mock<Ievents_connection>();
             mock_db.Setup(m => m.create_event(
@@ -46,7 +58,8 @@ namespace raceday_management_system.Tests
                 It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<decimal?>()))
                 .Returns("Event created successfully.");
 
-            var controller = new events(mock_db.Object);
+            var controller = create_controller(mock_db);
+
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = SessionHelper.make_context("Organiser", 1)
@@ -60,17 +73,16 @@ namespace raceday_management_system.Tests
             //assert
             var status_result = Assert.IsType<ObjectResult>(result);
             Assert.Equal(201, status_result.StatusCode);
-
         }//end of test
 
         //Unauthenticated user cannot view events (401)
         [Fact]
         public void unauthenticated_cannot_view_events()
         {//start of test
-
             //arrange
             var mock_db = new Mock<Ievents_connection>();
-            var controller = new events(mock_db.Object);
+            var controller = create_controller(mock_db);
+
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = SessionHelper.make_context()
@@ -81,17 +93,16 @@ namespace raceday_management_system.Tests
 
             //assert
             Assert.IsType<UnauthorizedObjectResult>(result);
-
         }//end of test
 
         //Invalid event type returns 400 Bad Request
         [Fact]
         public void invalid_event_type_returns_400()
         {//start of test
-
             //arrange
             var mock_db = new Mock<Ievents_connection>();
-            var controller = new events(mock_db.Object);
+            var controller = create_controller(mock_db);
+
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = SessionHelper.make_context("Organiser", 1)
@@ -104,7 +115,6 @@ namespace raceday_management_system.Tests
 
             //assert
             Assert.IsType<BadRequestObjectResult>(result);
-
         }//end of test
 
     }//end of class

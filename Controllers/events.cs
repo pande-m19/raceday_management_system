@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using raceday_management_system.Database.Interfaces;
+using raceday_management_system.Services;
 
 namespace raceday_management_system.Controllers
 {//start of namespace
@@ -11,11 +12,13 @@ namespace raceday_management_system.Controllers
     {//start of class
 
         private readonly Ievents_connection _db;
+        private readonly blob_storage_service _blob;
 
-        public events(Ievents_connection db)
+        public events(Ievents_connection db, blob_storage_service blob)
         {//start of constructor
 
             _db = db;
+            _blob = blob;
 
         }//end of constructor
 
@@ -266,15 +269,6 @@ namespace raceday_management_system.Controllers
         /// <summary>
         /// Creates a new event (Organiser only).
         /// </summary>
-        /// <param name="eventName">Event name.</param>
-        /// <param name="eventDescription">Event description.</param>
-        /// <param name="eventDate">Event date and time.</param>
-        /// <param name="location">Event location.</param>
-        /// <param name="distance">Distance in kilometres.</param>
-        /// <param name="eventType">Event type: Run, Walk, or Cycle.</param>
-        /// <param name="maxParticipants">Optional max participants.</param>
-        /// <param name="entryFee">Optional entry fee.</param>
-        /// <returns>201 Created. 400 Bad Request. 403 Forbidden. 401 Unauthorized.</returns>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -328,8 +322,6 @@ namespace raceday_management_system.Controllers
         /// <summary>
         /// Updates an existing event (Organiser owner only).
         /// </summary>
-        /// <param name="eventId">Event ID to update.</param>
-        /// <returns>200 OK. 400 Bad Request. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -393,8 +385,6 @@ namespace raceday_management_system.Controllers
         /// <summary>
         /// Soft-deletes an event by setting its status to Cancelled (Organiser owner only).
         /// </summary>
-        /// <param name="eventId">Event ID to delete.</param>
-        /// <returns>200 OK. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -449,18 +439,17 @@ namespace raceday_management_system.Controllers
         }//end of delete_event()
 
         /// <summary>
-        /// Sets the banner image URL for an event (Organiser owner only).
-        /// Part 3 will replace this with actual Azure Blob Storage upload.
+        /// Uploads an event banner to Azure Blob Storage and saves the URL (Organiser owner only).
         /// </summary>
         /// <param name="eventId">Event ID.</param>
-        /// <param name="bannerUrl">Banner image URL.</param>
+        /// <param name="file">The image file to upload.</param>
         /// <returns>200 OK. 403 Forbidden. 404 Not Found. 401 Unauthorized.</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("{eventId}/banner")]
-        public IActionResult set_event_banner(int eventId, string bannerUrl)
+        public async Task<IActionResult> set_event_banner(int eventId, IFormFile file)
         {//start of set_event_banner()
 
             var user_id = get_logged_in_user_id();
@@ -495,7 +484,18 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            string message = _db.set_event_banner(eventId, bannerUrl);
+            // 1. Upload to Azure
+            string? image_url = await _blob.upload_file_async(file);
+
+            if (image_url == null)
+            {//start of if
+
+                return BadRequest(new { message = "Failed to upload image to Azure." });
+
+            }//end of if
+
+            // 2. Save the URL to the database
+            string message = _db.set_event_banner(eventId, image_url);
 
             if (message.Contains("Error"))
             {//start of if
@@ -507,7 +507,7 @@ namespace raceday_management_system.Controllers
             return Ok(new
             {
                 message = "Banner updated successfully.",
-                bannerImageUrl = bannerUrl
+                bannerImageUrl = image_url
             });
 
         }//end of set_event_banner()

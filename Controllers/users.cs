@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using raceday_management_system.Database.Interfaces;
+using raceday_management_system.Services;
 
 namespace raceday_management_system.Controllers
 {//start of namespace
@@ -11,11 +12,13 @@ namespace raceday_management_system.Controllers
     {//start of class
 
         private readonly Iusers_connection _db;
+        private readonly blob_storage_service _blob;
 
-        public users(Iusers_connection db)
+        public users(Iusers_connection db, blob_storage_service blob)
         {//start of constructor
 
             _db = db;
+            _blob = blob;
 
         }//end of constructor
 
@@ -115,16 +118,15 @@ namespace raceday_management_system.Controllers
         }//end of update_own_profile()
 
         /// <summary>
-        /// Sets the profile picture URL for the logged-in Participant.
-        /// Part 3 will replace this with actual Azure Blob Storage upload.
+        /// Uploads a profile picture to Azure Blob Storage and saves the URL to the database.
         /// </summary>
-        /// <param name="pictureUrl">URL of the profile picture.</param>
+        /// <param name="file">The image file to upload.</param>
         /// <returns>200 OK on success. 403 Forbidden if not a Participant. 401 Unauthorized.</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpPost("profile-picture")]
-        public IActionResult set_profile_picture(string pictureUrl)
+        public async Task<IActionResult> set_profile_picture(IFormFile file)
         {//start of set_profile_picture()
 
             var user_id = get_logged_in_user_id();
@@ -145,7 +147,18 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            string message = _db.update_profile_picture(user_id.Value, pictureUrl);
+            // 1. Upload to Azure
+            string? image_url = await _blob.upload_file_async(file);
+
+            if (image_url == null)
+            {//start of if
+
+                return BadRequest(new { message = "Failed to upload image to Azure." });
+
+            }//end of if
+
+            // 2. Save the URL to the database
+            string message = _db.update_profile_picture(user_id.Value, image_url);
 
             if (message.Contains("Error"))
             {//start of if
@@ -157,7 +170,7 @@ namespace raceday_management_system.Controllers
             return Ok(new
             {
                 message = "Profile picture updated successfully.",
-                profilePictureUrl = pictureUrl
+                profilePictureUrl = image_url
             });
 
         }//end of set_profile_picture()

@@ -27,6 +27,7 @@ builder.Services.AddScoped<Idashboard_connection>(sp => sp.GetRequiredService<da
 
 //register services
 builder.Services.AddScoped<password_hasher>();
+builder.Services.AddScoped<blob_storage_service>();
 
 //configure session
 builder.Services.AddDistributedMemoryCache();
