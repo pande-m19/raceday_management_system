@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - raceday_management_system.MVC</title>
+    <title>@ViewData["Title"] - RaceDay</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/raceday_management_system.MVC.styles.css" asp-append-version="true" />
@@ -12,19 +12,53 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">raceday_management_system.MVC</a>
+                <!-- Changed brand name to RaceDay -->
+                <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">🏃 RaceDay</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                    <!-- Left Side Navigation -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+
+                        <!-- Show Dashboard link only if the logged-in user is an Organiser -->
+                        @if (Context.Session.GetString("Role") == "Organiser")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Organiser" asp-action="Dashboard">Organiser Dashboard</a>
+                            </li>
+                        }
+                    </ul>
+
+                    <!-- Right Side Navigation (Auth / Session) -->
+                    <ul class="navbar-nav">
+                        @if (Context.Session.GetString("User_id") != null)
+                        {
+                            <!-- User is logged in -->
+                            <li class="nav-item">
+                                <span class="nav-link text-dark fw-bold">Hello, @Context.Session.GetString("Email")!</span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Auth" asp-action="Logout" method="post" class="form-inline">
+                                    <button type="submit" class="btn btn-link nav-link text-danger fw-bold text-decoration-none">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- User is logged out -->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Register">Register</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -36,9 +70,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted mt-5">
         <div class="container">
-            &copy; 2026 - raceday_management_system.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - RaceDay - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
