@@ -83,5 +83,27 @@ namespace raceday_management_system.MVC.Services
             var response = await _http_client.DeleteAsync(endpoint);
             return response.IsSuccessStatusCode;
         }//end of delete_async()
+
+        // POST Multipart (For File Uploads)
+        public async Task<bool> post_multipart_async(string endpoint, IFormFile file)
+        {//start of post_multipart_async()
+            attach_session_cookie();
+
+            using (var content = new MultipartFormDataContent())
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    var file_content = new StreamContent(stream);
+                    file_content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+
+                    content.Add(file_content, "file", file.FileName);
+
+                    var response = await _http_client.PostAsync(endpoint, content);
+                    return response.IsSuccessStatusCode;
+                }
+            }
+        }//end of post_multipart_async()
+
     }//end of class
+
 }//end of namespace
