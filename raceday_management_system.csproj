@@ -15,11 +15,18 @@
 		<PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
 	</ItemGroup>
 
-	<!-- Exclude the test project folder and build output from this project's compilation -->
+	<!-- Exclude the test and MVC project folders plus build output from this project's compilation -->
 	<ItemGroup>
 		<Compile Remove="raceday_management_system.Tests/**" />
 		<Content Remove="raceday_management_system.Tests/**" />
 		<None Remove="raceday_management_system.Tests/**" />
+
+		<!-- ADDED THESE THREE LINES FOR THE MVC PROJECT -->
+		<Compile Remove="raceday_management_system.MVC/**" />
+		<Content Remove="raceday_management_system.MVC/**" />
+		<None Remove="raceday_management_system.MVC/**" />
+		<!-- END OF ADDED LINES -->
+
 		<Compile Remove="obj/**" />
 		<Compile Remove="bin/**" />
 	</ItemGroup>
