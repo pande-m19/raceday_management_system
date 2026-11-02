@@ -394,10 +394,9 @@ namespace raceday_management_system.Database
         }//end of get_event_results()
 
         //method to create an event (returns success or error message)
-        public string create_event(int organiser_id, string event_name, string event_description, DateTime event_date, string location, decimal distance, string event_type, int? max_participants, decimal? entry_fee)
+        //method to create an event (returns new event ID)
+        public int create_event(int organiser_id, string event_name, string event_description, DateTime event_date, string location, decimal distance, string event_type, int? max_participants, decimal? entry_fee)
         {//start of create_event()
-
-            string message = "";
 
             try
             {//start of try
@@ -407,12 +406,14 @@ namespace raceday_management_system.Database
 
                     connect.Open();
 
+                    // CHANGED: Added SCOPE_IDENTITY() to get the new ID
                     string query = @"insert into events 
                                      (organiser_id, event_name, event_description, event_date, location, 
                                       distance, event_type, max_participants, entry_fee, event_status, created_at) 
                                      values 
                                      (@OrganiserId, @EventName, @EventDescription, @EventDate, @Location, 
-                                      @Distance, @EventType, @MaxParticipants, @EntryFee, 'Upcoming', GETDATE())";
+                                      @Distance, @EventType, @MaxParticipants, @EntryFee, 'Upcoming', GETDATE());
+                                     SELECT CAST(SCOPE_IDENTITY() as int);";
 
                     using (SqlCommand cmd = new SqlCommand(query, connect))
                     {//start of using
@@ -427,25 +428,21 @@ namespace raceday_management_system.Database
                         cmd.Parameters.AddWithValue("@MaxParticipants", max_participants.HasValue ? (object)max_participants.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@EntryFee", entry_fee.HasValue ? (object)entry_fee.Value : DBNull.Value);
 
-                        cmd.ExecuteNonQuery();
+                        // CHANGED: ExecuteScalar returns the new ID
+                        int new_id = Convert.ToInt32(cmd.ExecuteScalar());
+                        return new_id;
 
                     }//end of using
-
-                    connect.Close();
-
-                    message = "Event created successfully.";
 
                 }//end of using
 
             }//end of try
-            catch (Exception error)
+            catch (Exception)
             {//start of catch
 
-                message = "Database Error: " + error.Message;
+                return 0; //return 0 to indicate failure
 
             }//end of catch
-
-            return message;
 
         }//end of create_event()
 
