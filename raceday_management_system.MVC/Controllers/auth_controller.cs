@@ -27,7 +27,7 @@ namespace raceday_management_system.MVC.Controllers
         {
             if (!ModelState.IsValid) return View("~/Views/Auth/Login.cshtml", model);
 
-            // API expects query parameters for login
+            //API expects query parameters for login
             string endpoint = $"authenticator/login?email={Uri.EscapeDataString(model.Email)}&password={Uri.EscapeDataString(model.Password)}";
 
             var result = await _api_service.post_async(endpoint, new { });
@@ -39,7 +39,7 @@ namespace raceday_management_system.MVC.Controllers
                     var role = doc.RootElement.GetProperty("role").GetString();
                     var userId = doc.RootElement.GetProperty("userId").GetInt32();
 
-                    // Save to MVC session
+                    //Save to MVC session
                     HttpContext.Session.SetInt32("User_id", userId);
                     HttpContext.Session.SetString("Role", role ?? "Participant");
                     HttpContext.Session.SetString("Email", model.Email);
