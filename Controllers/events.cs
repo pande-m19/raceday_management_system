@@ -281,40 +281,35 @@ namespace raceday_management_system.Controllers
 
             if (user_id == null)
             {//start of if
-
                 return Unauthorized(new { message = "Not logged in." });
-
             }//end of if
 
             if (!is_organiser())
             {//start of if
-
                 return StatusCode(403, new { message = "Only organisers can create events." });
-
             }//end of if
 
             if (eventType != "Run" && eventType != "Walk" && eventType != "Cycle")
             {//start of if
-
                 return BadRequest(new { message = "Event type must be 'Run', 'Walk', or 'Cycle'." });
-
             }//end of if
 
-            string message = _db.create_event(
+            //Capture the new ID
+            int new_event_id = _db.create_event(
                 user_id.Value, eventName, eventDescription, eventDate,
                 location, distance, eventType, maxParticipants, entryFee);
 
-            if (message.Contains("Error"))
+            if (new_event_id == 0)
             {//start of if
-
-                return BadRequest(new { message = message });
-
+                return BadRequest(new { message = "Failed to create event." });
             }//end of if
 
+            // CHANGED: Return the new ID to the MVC app
             return StatusCode(201, new
             {
                 message = "Event created successfully.",
-                event_name = eventName
+                event_name = eventName,
+                event_id = new_event_id
             });
 
         }//end of create_event()
@@ -484,7 +479,7 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            // 1. Upload to Azure
+            //Upload to Azure
             string? image_url = await _blob.upload_file_async(file);
 
             if (image_url == null)
@@ -494,7 +489,7 @@ namespace raceday_management_system.Controllers
 
             }//end of if
 
-            // 2. Save the URL to the database
+            //Save the URL to the database
             string message = _db.set_event_banner(eventId, image_url);
 
             if (message.Contains("Error"))

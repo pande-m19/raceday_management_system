@@ -52,11 +52,13 @@ namespace raceday_management_system.Tests
         {//start of test
             //arrange
             var mock_db = new Mock<Ievents_connection>();
+
+            //Return an int (dummy ID) instead of a string
             mock_db.Setup(m => m.create_event(
                 It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<decimal>(),
                 It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<decimal?>()))
-                .Returns("Event created successfully.");
+                .Returns(1);
 
             var controller = create_controller(mock_db);
 
