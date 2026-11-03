@@ -1,0 +1,75 @@
+﻿@model List<raceday_management_system.MVC.Models.category_view_model>
+@{
+    ViewData["Title"] = "Manage Categories";
+    int eventId = ViewBag.EventId;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Manage Categories (Event #@eventId)</h3>
+        <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="row">
+        <!-- Existing Categories -->
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">Current Categories</div>
+                <ul class="list-group list-group-flush">
+                    @if (Model.Any())
+                    {
+                        foreach (var cat in Model)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@cat.Category_name</strong>
+                                    @if (cat.Min_age.HasValue && cat.Max_age.HasValue)
+                                    {
+                                        <span class="text-muted">(Ages: @cat.Min_age - @cat.Max_age)</span>
+                                    }
+                                </div>
+                                <form asp-action="DeleteCategory" asp-route-categoryId="@cat.Category_id" asp-route-eventId="@eventId" method="post">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted">No categories added yet.</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Add Category Form -->
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">Add New Category</div>
+                <div class="card-body">
+                    <form asp-action="AddCategory" asp-route-eventId="@eventId" method="post">
+                        <div class="mb-2">
+                            <label class="form-label">Category Name</label>
+                            <input name="categoryName" class="form-control" required />
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Description (Optional)</label>
+                            <input name="catDescription" class="form-control" />
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-2">
+                                <label class="form-label">Min Age</label>
+                                <input name="minAge" type="number" class="form-control" />
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="form-label">Max Age</label>
+                                <input name="maxAge" type="number" class="form-control" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 mt-2">Add Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

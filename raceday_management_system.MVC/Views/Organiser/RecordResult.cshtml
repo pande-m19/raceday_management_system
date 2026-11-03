@@ -1,0 +1,45 @@
+﻿@model raceday_management_system.MVC.Models.record_result_view_model
+@{
+    ViewData["Title"] = "Record Result";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Record Result</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="RecordResult" asp-route-enrolmentId="@Model.Enrolment_id" method="post">
+                        <input type="hidden" asp-for="Event_id" />
+                        <input type="hidden" asp-for="Enrolment_id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Participant</label>
+                            <input asp-for="ParticipantName" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="FinishTime" class="form-label">Finish Time (HH:MM:SS)</label>
+                            <input asp-for="FinishTime" class="form-control" placeholder="e.g. 03:45:22" required />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="OverallPosition" class="form-label">Overall Position</label>
+                                <input asp-for="OverallPosition" type="number" class="form-control" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TotalFinishers" class="form-label">Total Finishers</label>
+                                <input asp-for="TotalFinishers" type="number" class="form-control" required />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Save Result</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
