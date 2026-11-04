@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <!-- Changed brand name to RaceDay -->
+                <!-- Brand Logo -->
                 <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">🏃 RaceDay</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -26,11 +26,28 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
-                        <!-- Show Dashboard link only if the logged-in user is an Organiser -->
+                        <!-- Navigation links based on Role -->
                         @if (Context.Session.GetString("Role") == "Organiser")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Organiser" asp-action="Dashboard">Dashboard</a>
+                            </li>
+                        }
+                        else if (Context.Session.GetString("Role") == "Participant")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Participant" asp-action="MyEvents">My Events</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Participant" asp-action="MyResults">My Results</a>
+                            </li>
+                        }
+
+                        <!-- Profile link visible to ALL logged-in users -->
+                        @if (Context.Session.GetString("User_id") != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="profile" asp-action="Index">Profile</a>
                             </li>
                         }
                     </ul>

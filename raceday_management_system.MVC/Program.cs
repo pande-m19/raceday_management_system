@@ -40,6 +40,20 @@ app.UseRouting();
 //Enable Session Middleware
 app.UseSession();
 
+//Catch API 401 errors and redirect to login
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (UnauthorizedAccessException)
+    {
+        context.Session.Clear(); // Clear the dead session
+        context.Response.Redirect("/Auth/Login"); // Send back to login
+    }
+});
+
 app.UseAuthorization();
 
 app.MapControllerRoute(

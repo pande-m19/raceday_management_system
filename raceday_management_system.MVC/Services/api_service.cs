@@ -31,6 +31,12 @@ namespace raceday_management_system.MVC.Services
         {//start of get_async()
             attach_session_cookie();
             var response = await _http_client.GetAsync(endpoint);
+            
+            //If API says Unauthorized, throw an exception
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException("API Session expired.");
+            }
 
             if (response.IsSuccessStatusCode)
             {
