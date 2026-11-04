@@ -1,32 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
 using raceday_management_system.MVC.Models;
-using System.Diagnostics;
+using raceday_management_system.MVC.Services;
 
 namespace raceday_management_system.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly api_service _api_service;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(api_service api_service)
         {
-            _logger = logger;
+            _api_service = api_service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            // If the user is not logged in, show the homepage but without events (or redirect to login)
+            if (HttpContext.Session.GetString("User_id") == null)
+            {
+                return View(new List<event_card_view_model>());
+            }
+
+            // Fetch upcoming events from the API
+            var events = await _api_service.get_async<List<event_card_view_model>>("events/upcoming");
+
+            return View(events ?? new List<event_card_view_model>());
         }
 
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
