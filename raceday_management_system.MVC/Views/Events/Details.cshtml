@@ -1,0 +1,91 @@
+﻿@model raceday_management_system.MVC.Models.event_details_view_model
+@{
+    ViewData["Title"] = Model.Event_name;
+}
+
+<div class="container mt-4">
+    <!-- Alerts -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Event Image -->
+        <div class="col-md-6 mb-4">
+            @if (!string.IsNullOrEmpty(Model.Banner_image_url))
+            {
+                <img src="@Model.Banner_image_url" class="img-fluid rounded shadow" alt="@Model.Event_name">
+            }
+            else
+            {
+                <div class="bg-secondary text-white rounded d-flex justify-content-center align-items-center shadow" style="height: 300px;">
+                    <span>No Image Available</span>
+                </div>
+            }
+        </div>
+
+        <!-- Event Details -->
+        <div class="col-md-6">
+            <span class="badge bg-primary mb-2">@Model.Event_type</span>
+            <h1 class="fw-bold">@Model.Event_name</h1>
+            <p class="lead text-muted">@Model.Event_description</p>
+
+            <ul class="list-group list-group-flush mb-4 shadow-sm">
+                <li class="list-group-item"><strong>📅 Date:</strong> @Model.Event_date.ToString("dd MMMM yyyy - HH:mm")</li>
+                <li class="list-group-item"><strong>📍 Location:</strong> @Model.Location</li>
+                <li class="list-group-item"><strong>🏃 Distance:</strong> @Model.Distance km</li>
+                <li class="list-group-item"><strong>💰 Entry Fee:</strong> R @Model.Entry_fee.ToString("0.00")</li>
+            </ul>
+
+            <!-- Enrolment Logic -->
+            @if (Context.Session.GetString("User_id") == null)
+            {
+                <div class="alert alert-warning">You must be logged in to enrol.</div>
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-primary w-100">Log In to Enrol</a>
+            }
+            else if (Context.Session.GetString("Role") == "Organiser")
+            {
+                <div class="alert alert-info">Organisers cannot enrol in events.</div>
+            }
+            else if (Model.IsEnrolled)
+            {
+                <div class="alert alert-success fw-bold text-center py-3">
+                    ✅ You are already enrolled in this event!
+                </div>
+                <a href="#" class="btn btn-outline-success w-100">View My Events (Coming in Step 5)</a>
+            }
+            else
+            {
+                <div class="card shadow-sm border-primary">
+                    <div class="card-header bg-primary text-white">Enrol Now</div>
+                    <div class="card-body">
+                        <form asp-controller="events" asp-action="Enrol" asp-route-id="@Model.Event_id" method="post">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Select a Category</label>
+                                <select name="categoryId" class="form-select" required>
+                                    <option value="">-- Select Category --</option>
+                                    @foreach (var cat in Model.Categories)
+                                    {
+                                        <option value="@cat.Category_id">@cat.Category_name</option>
+                                    }
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 fw-bold">Confirm Enrolment</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

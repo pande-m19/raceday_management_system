@@ -1,0 +1,46 @@
+﻿@model List<raceday_management_system.MVC.Models.my_event_view_model>
+@{
+    ViewData["Title"] = "My Events";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">My Events</h2>
+    <div class="card shadow">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">@item.Event_name</td>
+                                <td>@item.Event_date.ToString("dd MMM yyyy")</td>
+                                <td>@item.Category_name</td>
+                                <td>
+                                    <span class="badge @(item.Enr_status == "Confirmed" ? "bg-success" : "bg-warning text-dark")">
+                                        @item.Enr_status
+                                    </span>
+                                </td>
+                                <td>@item.Payment_status</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5" class="text-center py-4 text-muted">You haven't enrolled in any events yet.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
