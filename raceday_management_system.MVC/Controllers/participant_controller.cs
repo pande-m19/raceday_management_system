@@ -38,7 +38,14 @@ namespace raceday_management_system.MVC.Controllers
                     {
                         var root = doc.RootElement;
                         int eventId = root.GetProperty("event_id").GetInt32();
+                        int categoryId = root.GetProperty("category_id").GetInt32(); // GET THE CATEGORY ID
+
                         var matchedEvent = allEvents.FirstOrDefault(e => e.Event_id == eventId);
+
+                        // FETCH CATEGORIES TO GET THE REAL NAME
+                        var categories = await _api_service.get_async<List<category_view_model>>($"events/{eventId}/categories");
+                        var matchedCategory = categories?.FirstOrDefault(c => c.Category_id == categoryId);
+                        string categoryName = matchedCategory?.Category_name ?? "Unknown Category";
 
                         model.Add(new my_event_view_model
                         {
@@ -48,7 +55,7 @@ namespace raceday_management_system.MVC.Controllers
                             Event_date = matchedEvent?.Event_date ?? DateTime.MinValue,
                             Enr_status = root.GetProperty("enr_status").GetString() ?? "Pending",
                             Payment_status = root.TryGetProperty("payment_status", out var ps) ? ps.GetString() : "Pending",
-                            Category_name = "Selected Category" // We would need to join Categories for the real name
+                            Category_name = categoryName // USE THE REAL NAME HERE
                         });
                     }
                 }

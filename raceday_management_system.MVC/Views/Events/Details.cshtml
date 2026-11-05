@@ -63,7 +63,8 @@
                 <div class="alert alert-success fw-bold text-center py-3">
                     ✅ You are already enrolled in this event!
                 </div>
-                <a href="#" class="btn btn-outline-success w-100">View My Events (Coming in Step 5)</a>
+                <!-- UPDATED: Fixed text and linked to actual My Events page -->
+                <a asp-controller="Participant" asp-action="MyEvents" class="btn btn-outline-success w-100">View My Events</a>
             }
             else
             {
