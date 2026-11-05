@@ -37,6 +37,9 @@ namespace raceday_management_system.MVC.Controllers
 
             await _api_service.put_async(query, new { });
 
+            // Update session first name
+            HttpContext.Session.SetString("Firstname", firstname);
+
             TempData["SuccessMessage"] = "Profile updated successfully!";
             return RedirectToAction("Index");
         }//end of Update()
@@ -56,6 +59,14 @@ namespace raceday_management_system.MVC.Controllers
             if (file != null && file.Length > 0)
             {
                 await _api_service.post_multipart_async("users/profile-picture", file);
+
+                // Re-fetch the profile to get the new Azure URL and update the session
+                var updatedProfile = await _api_service.get_async<profile_view_model>("users/profile");
+                if (updatedProfile != null && !string.IsNullOrEmpty(updatedProfile.Profile_picture_url))
+                {
+                    HttpContext.Session.SetString("ProfilePicture", updatedProfile.Profile_picture_url);
+                }
+
                 TempData["SuccessMessage"] = "Profile picture updated!";
             }
 

@@ -1,22 +1,46 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* custom logo styling */
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0d6efd !important; 
+    letter-spacing: -0.5px;
+}
+
+.logo-container {
+    background-color: transparent;
+    width: 45px;
+    height: 45px;
+    display: flex; /* Keeps the image centered */
+    justify-content: center;
+    align-items: center;
+    margin-right: 12px;
+    /* Removed border-radius and border */
+}
+
+    .logo-container img {
+        height: 35px; /* Slightly increased height since the border is gone */
+        width: auto;
+    }

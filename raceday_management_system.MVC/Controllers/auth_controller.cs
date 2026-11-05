@@ -44,6 +44,19 @@ namespace raceday_management_system.MVC.Controllers
                     HttpContext.Session.SetString("Role", role ?? "Participant");
                     HttpContext.Session.SetString("Email", model.Email);
 
+                    // Fetch the profile to get the First Name and Profile Picture
+                    var profile = await _api_service.get_async<profile_view_model>("users/profile");
+                    if (profile != null)
+                    {
+                        HttpContext.Session.SetString("Firstname", profile.Firstname ?? "");
+
+                        // Store the picture URL, fallback to default if empty
+                        string picUrl = string.IsNullOrEmpty(profile.Profile_picture_url)
+                                        ? "/images/default-profile.png"
+                                        : profile.Profile_picture_url;
+                        HttpContext.Session.SetString("ProfilePicture", picUrl);
+                    }
+
                     if (role == "Organiser")
                         return RedirectToAction("Dashboard", "Organiser");
                     else

@@ -16,16 +16,12 @@
         <div class="col-md-4 text-center">
             <div class="card shadow mb-4">
                 <div class="card-body">
-                    @if (!string.IsNullOrEmpty(Model.Profile_picture_url))
-                    {
-                        <img src="@Model.Profile_picture_url" class="rounded-circle img-fluid mb-3 shadow" style="width: 150px; height: 150px; object-fit: cover;" />
-                    }
-                    else
-                    {
-                        <div class="bg-secondary rounded-circle d-inline-flex justify-content-center align-items-center mb-3 shadow" style="width: 150px; height: 150px;">
-                            <span class="text-white fs-1">👤</span>
-                        </div>
-                    }
+                    <!-- Uses default-profile.png if no image exists -->
+                    <img src="@(string.IsNullOrEmpty(Model.Profile_picture_url) ? "/images/default-profile.png" : Model.Profile_picture_url)" 
+                         class="rounded-circle img-fluid mb-3 shadow" 
+                         alt="Profile Picture"
+                         style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #e0e0e0;" />
+                         
                     <h4>@Model.Firstname @Model.Surname</h4>
                     <p class="text-muted">@Model.Email</p>
 

@@ -13,7 +13,12 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <!-- Brand Logo -->
-                <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">🏃 RaceDay</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <div class="logo-container">
+                        <img src="~/images/logo.png" alt="RaceDay Logo" />
+                    </div>
+                    RaceDay
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -42,27 +47,25 @@
                                 <a class="nav-link text-dark" asp-controller="Participant" asp-action="MyResults">My Results</a>
                             </li>
                         }
-
-                        <!-- Profile link visible to ALL logged-in users -->
-                        @if (Context.Session.GetString("User_id") != null)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="profile" asp-action="Index">Profile</a>
-                            </li>
-                        }
                     </ul>
 
                     <!-- Right Side Navigation (Auth / Session) -->
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav align-items-center">
                         @if (Context.Session.GetString("User_id") != null)
                         {
                             <!-- User is logged in -->
-                            <li class="nav-item">
-                                <span class="nav-link text-dark fw-bold">Hello, @Context.Session.GetString("Email")!</span>
+                            <li class="nav-item me-3">
+                                <!-- Profile Picture linking to Profile page -->
+                                <a asp-controller="profile" asp-action="Index" class="nav-link p-0" title="My Profile">
+                                    <img src="@(Context.Session.GetString("ProfilePicture") ?? "/images/default-profile.png")"
+                                         alt="Profile"
+                                         class="rounded-circle shadow-sm"
+                                         style="width: 40px; height: 40px; object-fit: cover;" />
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <form asp-controller="Auth" asp-action="Logout" method="post" class="form-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-danger fw-bold text-decoration-none">Logout</button>
+                                <form asp-controller="Auth" asp-action="Logout" method="post" class="form-inline m-0">
+                                    <button type="submit" class="btn btn-link nav-link text-danger fw-bold text-decoration-none p-0">Logout</button>
                                 </form>
                             </li>
                         }
