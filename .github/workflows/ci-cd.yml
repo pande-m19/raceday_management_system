@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - RaceDay Part 2
+name: CI/CD Pipeline - RaceDay Part 3
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup .NET
+    - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
@@ -22,11 +22,11 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build solution
+    - name: Build Solution (API, MVC, and Tests)
       run: dotnet build --no-restore --configuration Release
 
-    - name: Run unit tests
+    - name: Run Unit Tests
       run: dotnet test --no-build --configuration Release --verbosity normal
 
     - name: Validation complete
-      run: echo "✅ Build and tests completed successfully!"
+      run: echo "✅ API, MVC Project, and Unit Tests built and validated successfully!"
