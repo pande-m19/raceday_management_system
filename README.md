@@ -464,14 +464,101 @@ This project is created for academic purposes as part of the Portfolio of Eviden
 
 ---
 
-## 🚀 Next Steps
+# 🎨 PART 3 - MVC Web Application & Deployment
 
-### Part 3 - MVC Web Application
-- Build ASP.NET Core MVC frontend
-- Consume the Part 2 API
-- Integrate Azure Blob Storage
-- Containerize with Docker
+## 📋 Overview
 
-**✅ Part 1 - System Planning and Database - COMPLETE**
+Part 3 extends the RESTful API by introducing a full **ASP.NET Core MVC** frontend. This provides a visually engaging, role-based user interface for both Organisers and Participants. It also introduces **Azure Blob Storage** for cloud image hosting and **Docker** for containerization.
 
-**✅ Part 2 - RESTful API Development - COMPLETE**
+### Key Features
+- **MVC Frontend**: Responsive UI using Bootstrap and custom CSS.
+- **Session Management**: The MVC app securely stores the API session cookie to keep users logged in across requests.
+- **Azure Blob Storage**: Event banners and user profile pictures are uploaded directly to the cloud.
+- **Graceful Error Handling**: Global exception handling redirects expired sessions back to the login page.
+- **Dockerized**: The MVC application is fully containerized and can communicate with the local API.
+
+---
+
+## 🚀 Setup and Run Instructions
+
+### Prerequisites
+- Visual Studio 2022 (with ASP.NET and web development workload)
+- SQL Server Management Studio (SSMS)
+- Docker Desktop (for Part 3)
+
+### 1. Database Setup
+1. Open SSMS and run the `docs/raceday_db.sql` script to create the database and seed data.
+2. Verify the database was created successfully.
+
+### 2. API Setup
+1. Open the solution in Visual Studio.
+2. Ensure `raceday_management_system` (the API) is set as the Startup Project.
+3. Ensure you have your Azure Storage connection string set in `appsettings.Development.json`.
+4. Press **F5** to run the API. Swagger will open in your browser.
+
+### 3. MVC Application Setup
+1. Right-click the solution, go to **Properties** -> **Configure Startup Projects**.
+2. Select **Multiple startup projects**.
+3. Set `raceday_management_system` and `raceday_management_system.MVC` to **Start**.
+4. Press **F5**. Both projects will launch, and your browser will open the MVC frontend.
+
+---
+
+## ☁️ Azure Blob Storage Integration
+
+The system integrates with Microsoft Azure for scalable image hosting.
+- **Event Banners**: Organisers upload banners when creating/editing events.
+- **Profile Pictures**: Participants can upload a profile picture.
+- **Fallback Images**: A default avatar is displayed if a user hasn't uploaded a picture.
+
+*Note: To run this locally, you must provide your own Azure Storage connection string in `appsettings.Development.json` within the API project.*
+
+---
+
+## 🐳 Docker Deployment (MVC Application)
+
+The MVC frontend is fully containerised. Because the frontend needs to communicate with the backend API running on your local machine, we use the `host.docker.internal` DNS name to allow the container to connect to the host machine.
+
+**Prerequisites:**
+1. Ensure **Docker Desktop** is running.
+2. Ensure the backend API (`raceday_management_system`) is running locally on HTTP port `5138` (use the `http` profile in Visual Studio).
+
+**1. Build the Docker Image**
+From the root of the solution, run the following command to build the image:
+```bash
+docker build -t raceday-mvc -f raceday_management_system.MVC/Dockerfile .
+
+2. Run the Docker Container
+Run the container in detached mode, mapping port 8080, and passing the API Base URL as an environment variable:
+2. Run the Docker Container
+Run the container in detached mode, mapping port 8080, and passing the API Base URL as an environment variable:
+
+docker run -d -p 8080:8080 --name raceday-mvc-container -e ApiSettings__BaseUrl="http://host.docker.internal:5138/api/" raceday-mvc
+3. Access the Application
+Open your browser and navigate to:
+
+text
+http://localhost:8080
+4. Stop and Remove the Container (When finished)
+docker stop raceday-mvc-container
+docker rm raceday-mvc-container
+
+
+📚 Part 3 Deliverables Checklist
+Deliverable	Status	Location
+ASP.NET Core MVC App	✅	/raceday_management_system.MVC/
+API Integration (HttpClient)	✅	api_service.cs
+Login & Registration UI	✅	Views/Auth/
+Organiser Dashboard & CRUD	✅	Views/Organiser/
+Participant Interface	✅	Views/Participant/
+Azure Blob Storage Upload	✅	blob_storage_service.cs
+Docker Containerization	✅	Dockerfile
+
+🎥 Part 3 Video Presentation
+YouTube Link: [INSERT YOUR PART 3 YOUTUBE LINK HERE]
+
+✅ Part 1 - System Planning and Database - COMPLETE
+
+✅ Part 2 - RESTful API Development - COMPLETE
+
+✅ Part 3 - MVC Web Application & Deployment - COMPLETE
