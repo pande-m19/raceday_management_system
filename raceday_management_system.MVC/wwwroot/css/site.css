@@ -1,7 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 html {
     font-size: 14px;
-    position: relative;
-    min-height: 100%;
+    min-height: 100vh;
 }
 
 @media (min-width: 768px) {
@@ -11,21 +12,146 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f7f6; /* Very soft gray/blue background */
+    color: #333;
+    /* NEW: Flexbox layout to permanently fix footer overlap */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin-bottom: 0;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* NEW: Pushes the footer to the bottom of the page */
+.container {
+    flex: 1 0 auto;
 }
 
-/* custom logo styling */
+/* buttons and forms */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 20px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0b5ed7;
+        transform: translateY(-1px);
+    }
+
+.btn-success {
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px 15px;
+}
+
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        border-color: #0d6efd;
+    }
+
+/* cards and shadows */
+.card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+    .card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+.card-header {
+    font-weight: 600;
+    border-bottom: 1px solid #e9ecef;
+}
+
+    .card-header.bg-dark {
+        background-color: #1a1e23 !important;
+        color: white;
+    }
+
+/* tables */
+.table {
+    margin-bottom: 0;
+}
+
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        border-bottom: 2px solid #e9ecef;
+        padding: 15px;
+    }
+
+    .table td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.03);
+}
+
+/* badger */
+.badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+    .badge.bg-success {
+        background-color: #d1e7dd !important;
+        color: #0f5132 !important;
+    }
+    /* Confirmed = Green */
+    .badge.bg-warning {
+        background-color: #fff3cd !important;
+        color: #856404 !important;
+    }
+    /* Pending = Amber */
+    .badge.bg-secondary {
+        background-color: #e2e3e5 !important;
+        color: #383d41 !important;
+    }
+    /* Cancelled = Gray */
+    .badge.bg-primary {
+        background-color: #cfe2ff !important;
+        color: #084298 !important;
+    }
+/* Event Type = Blue */
+
+/* navbar and logo */
+.navbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e9ecef !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+    padding: 15px 0;
+}
 
 .navbar-brand {
     display: flex;
     align-items: center;
     font-size: 1.5rem;
     font-weight: 800;
-    color: #0d6efd !important; 
+    color: #0d6efd !important;
     letter-spacing: -0.5px;
 }
 
@@ -33,14 +159,33 @@ body {
     background-color: transparent;
     width: 45px;
     height: 45px;
-    display: flex; /* Keeps the image centered */
+    display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 12px;
-    /* Removed border-radius and border */
+    margin-right: 10px;
 }
 
     .logo-container img {
-        height: 35px; /* Slightly increased height since the border is gone */
+        height: 35px;
         width: auto;
     }
+
+.nav-link {
+    font-weight: 500;
+    color: #495057 !important;
+}
+
+    .nav-link:hover {
+        color: #0d6efd !important;
+    }
+
+/* footer */
+.footer {
+    background-color: #ffffff;
+    border-top: 1px solid #e9ecef;
+    padding: 20px 0;
+    /* NEW: Prevents the footer from floating over content */
+    position: static !important;
+    flex-shrink: 0;
+    margin-top: 40px;
+}
