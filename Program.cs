@@ -1,11 +1,16 @@
-using System.Reflection;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.OpenApi.Models;
 using raceday_management_system.Database;
 using raceday_management_system.Database.Interfaces;
 using raceday_management_system.Services;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 1. NEW: Persist Data Protection keys so API restarts don't log users out
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "keys")));
 
 //register database helpers — concrete implementations
 builder.Services.AddScoped<auth_connection>();
@@ -33,7 +38,8 @@ builder.Services.AddScoped<blob_storage_service>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    // 2. NEW: Extended timeout to 4 hours (240 minutes)
+    options.IdleTimeout = TimeSpan.FromMinutes(240);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
