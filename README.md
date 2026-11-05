@@ -37,7 +37,7 @@
 
 ## 📁 Project Structure (Part 1)
 
-```
+```text
 raceday_management_system/
 ├── README.md                                    # This file
 ├── docs/                                        # Documentation folder
@@ -45,7 +45,7 @@ raceday_management_system/
 │   ├── API-ENDPOINT-PLAN.pdf                    # Final API endpoint plan
 │   ├── ERD.png                                  # Entity Relationship Diagram
 │   ├── raceday_db.sql                           # SQL database script with seed data
-│   ├── ci-cd-green-build.png                    # Part 2 CI/CD green build screenshot
+│   ├── ci-cd-green-build.png                    # Part 2 & 3 CI/CD green build screenshot
 │   └── test-results.png                         # Part 2 unit test results screenshot
 └── .github/
     └── workflows/
@@ -61,6 +61,81 @@ raceday_management_system/
 4. **Enrolments** - Participant registrations
 5. **Results** - Race results and finishing positions
 6. **Event_Images** - Gallery images for events
+
+### SQL Table Structures
+Below is an overview of the database schema implemented via ADO.NET.
+
+```sql
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY IDENTITY(1,1),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    firstname VARCHAR(100) NOT NULL,
+    surname VARCHAR(100) NOT NULL,
+    role VARCHAR(20) NOT NULL CHECK (role IN ('Organiser', 'Participant')),
+    date_of_birth DATE,
+    phone_number VARCHAR(20),
+    profile_picture_url VARCHAR(500),
+    is_active BIT DEFAULT 1,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME
+);
+
+CREATE TABLE Events (
+    event_id INT PRIMARY KEY IDENTITY(1,1),
+    organiser_id INT FOREIGN KEY REFERENCES Users(user_id),
+    event_name VARCHAR(150) NOT NULL,
+    event_description TEXT,
+    event_date DATETIME NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    distance DECIMAL(5,2) NOT NULL,
+    event_type VARCHAR(20) NOT NULL CHECK (event_type IN ('Run', 'Walk', 'Cycle')),
+    max_participants INT,
+    entry_fee DECIMAL(10,2),
+    banner_image_url VARCHAR(500),
+    event_status VARCHAR(20) DEFAULT 'Upcoming',
+    created_at DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE Categories (
+    category_id INT PRIMARY KEY IDENTITY(1,1),
+    event_id INT FOREIGN KEY REFERENCES Events(event_id),
+    category_name VARCHAR(100) NOT NULL,
+    cat_description VARCHAR(255),
+    min_age INT,
+    max_age INT,
+    min_distance DECIMAL(5,2),
+    max_distance DECIMAL(5,2)
+);
+
+CREATE TABLE Enrolments (
+    enrolment_id INT PRIMARY KEY IDENTITY(1,1),
+    event_id INT FOREIGN KEY REFERENCES Events(event_id),
+    participant_id INT FOREIGN KEY REFERENCES Users(user_id),
+    category_id INT FOREIGN KEY REFERENCES Categories(category_id),
+    enrolment_date DATETIME DEFAULT GETDATE(),
+    enr_status VARCHAR(20) DEFAULT 'Pending',
+    payment_status VARCHAR(20) DEFAULT 'Pending'
+);
+
+CREATE TABLE Results (
+    result_id INT PRIMARY KEY IDENTITY(1,1),
+    enrolment_id INT FOREIGN KEY REFERENCES Enrolments(enrolment_id),
+    event_id INT FOREIGN KEY REFERENCES Events(event_id),
+    finish_time TIME,
+    overall_position INT,
+    total_finishers INT,
+    category_position INT,
+    created_at DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE Event_Images (
+    image_id INT PRIMARY KEY IDENTITY(1,1),
+    event_id INT FOREIGN KEY REFERENCES Events(event_id),
+    image_url VARCHAR(500) NOT NULL,
+    uploaded_at DATETIME DEFAULT GETDATE()
+);
+```
 
 ### ERD Highlights
 - ✅ 6 entities with clear relationships
@@ -101,18 +176,17 @@ raceday_management_system/
 ### Steps to Create Database
 
 1. **Open SQL Server Management Studio (SSMS)**
-
 2. **Run the SQL Script**
    - Open `docs/raceday_db.sql` in SSMS
    - Click **Execute** (F5) to run the script
-
 3. **Verify Database Creation**
-   ```sql
-   USE raceday_db;
-   SELECT * FROM users;
-   SELECT * FROM events;
-   SELECT * FROM enrolments;
-   ```
+
+```sql
+USE raceday_db;
+SELECT * FROM users;
+SELECT * FROM events;
+SELECT * FROM enrolments;
+```
 
 4. **Sample Data Included**
    - 2 Organisers (Thabo Mokoena, Sarah Van Der Merwe)
@@ -165,7 +239,7 @@ raceday_management_system/
 The RaceDay API is built with **ASP.NET Core 8.0** and uses **ADO.NET** for direct database access. The API implements **session-based authentication**, **role-based access control** (Organiser vs Participant), and exposes **39 RESTful endpoints** across 7 controllers.
 
 ### Key Features
-- **Session-Based Authentication**: Server-side sessions with 30-minute timeout
+- **Session-Based Authentication**: Server-side sessions with extended timeout
 - **BCrypt Password Hashing**: Secure password storage using BCrypt.Net-Next
 - **Role-Based Access Control**: Enforced at the controller level
 - **Ownership Validation**: Organisers can only modify their own resources
@@ -189,7 +263,7 @@ The RaceDay API is built with **ASP.NET Core 8.0** and uses **ADO.NET** for dire
 
 ## 📁 Part 2 Project Structure
 
-```
+```text
 raceday_management_system/
 ├── Controllers/                          # 7 API controllers
 │   ├── authenticator.cs                  # Register, login, logout, current-user
@@ -201,13 +275,6 @@ raceday_management_system/
 │   └── dashboard.cs                      # Organiser & Participant dashboards
 ├── Database/                             # ADO.NET data helpers
 │   ├── Interfaces/                       # 7 interfaces (for testing with Moq)
-│   │   ├── Iauth_connection.cs
-│   │   ├── Icategories_connection.cs
-│   │   ├── Idashboard_connection.cs
-│   │   ├── Ienrolments_connection.cs
-│   │   ├── Ievents_connection.cs
-│   │   ├── Iresults_connection.cs
-│   │   └── Iusers_connection.cs
 │   ├── auth_connection.cs                # Auth DB operations
 │   ├── users_connection.cs               # User DB operations
 │   ├── events_connection.cs              # Event DB operations
@@ -216,22 +283,10 @@ raceday_management_system/
 │   ├── results_connection.cs             # Result DB operations
 │   └── dashboard_connection.cs           # Dashboard DB operations
 ├── Models/                               # 6 entity models
-│   ├── Categories.cs
-│   ├── Enrolments.cs
-│   ├── Event_images.cs
-│   ├── Events.cs
-│   ├── Results.cs
-│   └── Users.cs
 ├── Services/
-│   └── password_hasher.cs                # BCrypt password hashing
+│   ├── password_hasher.cs                # BCrypt password hashing
+│   └── blob_storage_service.cs           # Azure Blob Storage integration
 ├── raceday_management_system.Tests/      # Unit test project (xUnit + Moq)
-│   ├── AuthControllerTests.cs            # 5 auth tests
-│   ├── EnrolmentsControllerTests.cs      # 4 enrolment tests
-│   ├── EventsControllerTests.cs          # 4 event tests
-│   ├── RoleAccessTests.cs                # 5 role-based access tests
-│   ├── FakeSession.cs                    # Fake session helper
-│   ├── SessionHelper.cs                  # HTTP context helper
-│   └── raceday_management_system.Tests.csproj
 └── Program.cs                            # DI registration and pipeline config
 ```
 
@@ -239,75 +294,24 @@ raceday_management_system/
 
 ## 🔌 Part 2 API Endpoints (39 Total)
 
-### Authentication (`/api/authenticator`)
-| Method | Route | Role |
-|--------|-------|------|
-| POST | `/register` | Public |
-| POST | `/login` | Public |
-| POST | `/logout` | Logged in |
-| GET | `/current-user` | Logged in |
+*(See the full endpoint plan in `docs/API-ENDPOINT-PLAN.pdf`)*
 
-### User Profile (`/api/users`)
-| Method | Route | Role |
-|--------|-------|------|
-| GET | `/profile` | Any logged in |
-| PUT | `/profile` | Any logged in |
-| POST | `/profile-picture` | Participant |
-| GET | `/{userId}/profile` | Any logged in |
+### Authentication (`/api/authenticator`)
+- `POST /register` (Public)
+- `POST /login` (Public)
+- `POST /logout` (Logged in)
+- `GET /current-user` (Logged in)
 
 ### Events (`/api/events`)
-| Method | Route | Role |
-|--------|-------|------|
-| GET | `/` | Any logged in |
-| GET | `/upcoming` | Any logged in |
-| GET | `/organiser` | Organiser |
-| GET | `/{eventId}` | Any logged in |
-| GET | `/{eventId}/categories` | Any logged in |
-| GET | `/{eventId}/enrolments` | Organiser (owner) |
-| GET | `/{eventId}/results` | Any logged in |
-| POST | `/` | Organiser |
-| PUT | `/{eventId}` | Organiser (owner) |
-| DELETE | `/{eventId}` | Organiser (owner) |
-| POST | `/{eventId}/banner` | Organiser (owner) |
+- `GET /` (Any logged in)
+- `GET /upcoming` (Any logged in)
+- `GET /organiser` (Organiser)
+- `POST /` (Organiser)
+- `PUT /{eventId}` (Organiser owner)
+- `DELETE /{eventId}` (Organiser owner)
+- `POST /{eventId}/banner` (Organiser owner)
 
-### Categories (`/api/categories`)
-| Method | Route | Role |
-|--------|-------|------|
-| GET | `/{categoryId}` | Any logged in |
-| POST | `/{eventId}` | Organiser (owner) |
-| PUT | `/{categoryId}` | Organiser (owner) |
-| DELETE | `/{categoryId}` | Organiser (owner) |
-
-### Enrolments (`/api/enrolments`)
-| Method | Route | Role |
-|--------|-------|------|
-| GET | `/me` | Participant |
-| GET | `/me/{eventId}` | Participant |
-| POST | `/{eventId}` | Participant |
-| PUT | `/{enrolmentId}/cancel` | Participant (owner) |
-| PUT | `/{enrolmentId}/status` | Organiser (owner) |
-| PUT | `/{enrolmentId}/payment` | Organiser (owner) |
-| GET | `/event/{eventId}` | Organiser (owner) |
-
-### Results (`/api/results`)
-| Method | Route | Role |
-|--------|-------|------|
-| GET | `/me` | Participant |
-| GET | `/leaderboard/{eventId}` | Any logged in |
-| GET | `/{resultId}` | Any logged in |
-| POST | `/{eventId}` | Organiser (owner) |
-| PUT | `/{resultId}` | Organiser (owner) |
-| PUT | `/{resultId}/publish` | Organiser (owner) |
-| DELETE | `/{resultId}` | Organiser (owner) |
-| GET | `/api/participants/{participantId}/results` | Organiser |
-
-### Dashboard (`/api/dashboard`)
-| Method | Route | Role |
-|--------|-------|------|
-| GET | `/organiser` | Organiser |
-| GET | `/participant` | Participant |
-
-See the full endpoint plan in `docs/API-ENDPOINT-PLAN.pdf`.
+*(Additional endpoints for Users, Categories, Enrolments, Results, and Dashboards are fully implemented as per the Part 1 plan).*
 
 ---
 
@@ -315,39 +319,10 @@ See the full endpoint plan in `docs/API-ENDPOINT-PLAN.pdf`.
 
 All tests pass locally and through the GitHub Actions CI/CD workflow.
 
-### Test Project Structure (`raceday_management_system.Tests`)
-
-```
-raceday_management_system.Tests/
-├── Dependencies/                         # NuGet packages (xUnit, Moq, etc.)
-├── AuthControllerTests.cs                # 5 authentication tests
-├── EnrolmentsControllerTests.cs          # 4 enrolment tests
-├── EventsControllerTests.cs              # 4 event management tests
-├── RoleAccessTests.cs                    # 5 role-based access tests
-├── FakeSession.cs                        # ISession mock implementation
-├── SessionHelper.cs                      # HttpContext factory for tests
-└── raceday_management_system.Tests.csproj
-```
-
-### Test Coverage
-
-| Test Group | Count | Purpose |
-|-----------|-------|---------|
-| `AuthControllerTests` | 5 | Register/login success and failure scenarios |
-| `EventsControllerTests` | 4 | Event creation, role checks, invalid data |
-| `EnrolmentsControllerTests` | 4 | Enrol, duplicate prevention, invalid category |
-| `RoleAccessTests` | 5 | Cross-role dashboard & event access |
-
-### Testing Framework
-
 - **xUnit**: Test framework
 - **Moq**: Mocking library for interfaces
 - **FakeSession**: Custom `ISession` implementation to simulate user login
 - **SessionHelper**: Builds `HttpContext` with preset session values
-
-### Test Results
-
-![Tests Passing](docs/test_results1.png)
 
 **Local test run:** `Test summary: total: 18, failed: 0, succeeded: 18, skipped: 0`
 
@@ -367,100 +342,11 @@ Every push to `main` triggers a workflow that:
 
 ![CI/CD Pipeline - Part 2](docs/ci-cd-green-build.png)
 
-**Average build time:** ~38 seconds ✅
-
 ---
 
 ## 🎥 Part 2 Video Presentation
 
 **YouTube Link:** https://youtu.be/qJepWK_j-eY
-
-**Video Content:**
-- 🎯 API architecture walkthrough
-- 🔐 Authentication flow and session management
-- 🛠️ All 7 controllers demonstrated
-- 🧪 Unit tests running locally and in CI/CD
-- ✅ Swagger UI tour
-
----
-
-## 📚 Part 2 Deliverables Checklist
-
-| Deliverable | Status | Location |
-|-------------|--------|----------|
-| ASP.NET Core Web API | ✅ | `/Controllers/` |
-| ADO.NET Data Access | ✅ | `/Database/` |
-| Interfaces for Testing | ✅ | `/Database/Interfaces/` |
-| Session-Based Authentication | ✅ | `authenticator.cs` |
-| BCrypt Password Hashing | ✅ | `Services/password_hasher.cs` |
-| Role-Based Access Control | ✅ | All controllers |
-| Swagger Documentation | ✅ | Configured in `Program.cs` |
-| Unit Test Project | ✅ | `raceday_management_system.Tests/` |
-| 18 Unit Tests | ✅ | 4 test files + 2 helpers |
-| CI/CD Workflow | ✅ | `/.github/workflows/ci-cd.yml` |
-| Green Build Screenshot | ✅ | `docs/ci-cd-green-build.png` |
-| Test Results Screenshot | ✅ | `docs/test-results.png` |
-| Video Presentation | ✅ | https://youtu.be/qJepWK_j-eY |
-
----
-
-## 📊 Commit Statistics
-
-| Part | Minimum Required | Actual Commits | Status |
-|------|------------------|----------------|--------|
-| Part 1 | 20 | 25+ | ✅ |
-| Part 2 | 20 | 20+ | ✅ |
-
----
-
-## 🛠️ Technology Stack (Full Project)
-
-| Layer | Technology |
-|-------|------------|
-| Frontend | ASP.NET Core MVC, Bootstrap (Part 3) |
-| Backend API | ASP.NET Core Web API (C#) |
-| Data Access | ADO.NET (`System.Data.SqlClient`) |
-| Database | SQL Server (SSMS) |
-| Authentication | Session-based + BCrypt |
-| Cloud Storage | Azure Blob Storage (Part 3) |
-| Testing | xUnit + Moq |
-| CI/CD | GitHub Actions |
-| Containerization | Docker (Part 3) |
-
----
-
-## 📝 Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2026-09-03 | Initial Part 1 submission |
-| 2.0 | 2026-10-13 | Part 2 - RESTful API with authentication, 39 endpoints, and 18 unit tests |
-
----
-
-## 🔗 GitHub Repository
-
-**Repository Link:** https://github.com/pande26/raceday_management_system.git
-
----
-
-## 👨‍💻 Author
-
-**Pandelani**
-- GitHub: [@pande26](https://github.com/pande26)
-
----
-
-## 📄 License
-
-This project is created for academic purposes as part of the Portfolio of Evidence (POE) for the Software Development course.
-
----
-
-## 🙏 Acknowledgements
-
-- South African road events community (Comrades Marathon, Cape Town Cycle Tour, Soweto Marathon, Two Oceans Marathon)
-- Lecturers and mentors providing guidance throughout the project
 
 ---
 
@@ -476,6 +362,54 @@ Part 3 extends the RESTful API by introducing a full **ASP.NET Core MVC** fronte
 - **Azure Blob Storage**: Event banners and user profile pictures are uploaded directly to the cloud.
 - **Graceful Error Handling**: Global exception handling redirects expired sessions back to the login page.
 - **Dockerized**: The MVC application is fully containerized and can communicate with the local API.
+
+---
+
+## 📁 Part 3 Project Structure
+
+```text
+raceday_management_system.MVC/
+├── Controllers/
+│   ├── auth_controller.cs                # Handles Login, Register, Logout
+│   ├── events_controller.cs              # Participant Event Browsing & Details
+│   ├── HomeController.cs                 # Home page with upcoming events
+│   ├── organiser_controller.cs           # Organiser Dashboard & CRUD operations
+│   ├── participant_controller.cs         # Participant My Events & Results
+│   └── profile_controller.cs             # Shared profile management (both roles)
+├── Models/                               # View Models mapping to API JSON
+│   ├── category_view_model.cs
+│   ├── create_event_view_model.cs
+│   ├── dashboard_view_model.cs
+│   ├── edit_event_view_model.cs
+│   ├── enrolment_status_view_model.cs
+│   ├── enrolment_view_model.cs
+│   ├── event_card_view_model.cs
+│   ├── event_details_view_model.cs
+│   ├── login_view_model.cs
+│   ├── my_event_view_model.cs
+│   ├── my_result_view_model.cs
+│   ├── profile_view_model.cs
+│   ├── record_result_view_model.cs
+│   └── register_view_model.cs
+├── Services/
+│   └── api_service.cs                    # HttpClient wrapper for API communication
+├── Views/
+│   ├── Auth/                             # Login.cshtml, Register.cshtml
+│   ├── Events/                           # Details.cshtml (with enrol button)
+│   ├── Home/                             # Index.cshtml (Hero banner & event grid)
+│   ├── Organiser/                        # Dashboard, CreateEvent, EditEvent, 
+│   │                                     # ManageCategories, EventEnrolments, 
+│   │                                     # RecordResult, ViewResults
+│   ├── Participant/                      # MyEvents.cshtml, MyResults.cshtml
+│   ├── Profile/                          # Index.cshtml (shared profile view)
+│   └── Shared/                           # _Layout.cshtml (Navbar, Session logic)
+├── wwwroot/
+│   ├── css/site.css                      # Custom RaceDay branding & Flexbox footer
+│   └── images/                           # logo.png, default-profile.png, hero-bg.jpeg
+├── appsettings.json                      # API Base URL Configuration
+├── Dockerfile                            # Multi-stage build for containerization
+└── Program.cs                            # DI registration, Sessions, HttpClient setup
+```
 
 ---
 
@@ -525,40 +459,118 @@ The MVC frontend is fully containerised. Because the frontend needs to communica
 
 **1. Build the Docker Image**
 From the root of the solution, run the following command to build the image:
+
 ```bash
 docker build -t raceday-mvc -f raceday_management_system.MVC/Dockerfile .
+```
 
-2. Run the Docker Container
-Run the container in detached mode, mapping port 8080, and passing the API Base URL as an environment variable:
-2. Run the Docker Container
+**2. Run the Docker Container**
 Run the container in detached mode, mapping port 8080, and passing the API Base URL as an environment variable:
 
+```bash
 docker run -d -p 8080:8080 --name raceday-mvc-container -e ApiSettings__BaseUrl="http://host.docker.internal:5138/api/" raceday-mvc
-3. Access the Application
+```
+
+**3. Access the Application**
 Open your browser and navigate to:
 
-text
+```text
 http://localhost:8080
-4. Stop and Remove the Container (When finished)
+```
+
+**4. Stop and Remove the Container (When finished)**
+
+```bash
 docker stop raceday-mvc-container
 docker rm raceday-mvc-container
+```
 
+---
 
-📚 Part 3 Deliverables Checklist
-Deliverable	Status	Location
-ASP.NET Core MVC App	✅	/raceday_management_system.MVC/
-API Integration (HttpClient)	✅	api_service.cs
-Login & Registration UI	✅	Views/Auth/
-Organiser Dashboard & CRUD	✅	Views/Organiser/
-Participant Interface	✅	Views/Participant/
-Azure Blob Storage Upload	✅	blob_storage_service.cs
-Docker Containerization	✅	Dockerfile
+## 📚 Part 3 Deliverables Checklist
 
-🎥 Part 3 Video Presentation
-YouTube Link: [INSERT YOUR PART 3 YOUTUBE LINK HERE]
+| Deliverable | Status | Location |
+|-------------|--------|----------|
+| ASP.NET Core MVC App | ✅ | `/raceday_management_system.MVC/` |
+| API Integration (HttpClient) | ✅ | `api_service.cs` |
+| Login & Registration UI | ✅ | `Views/Auth/` |
+| Organiser Dashboard & CRUD | ✅ | `Views/Organiser/` |
+| Participant Interface | ✅ | `Views/Participant/` |
+| Azure Blob Storage Upload | ✅ | `blob_storage_service.cs` |
+| Docker Containerization | ✅ | `Dockerfile` |
 
-✅ Part 1 - System Planning and Database - COMPLETE
+---
 
-✅ Part 2 - RESTful API Development - COMPLETE
+## 🎥 Part 3 Video Presentation
 
-✅ Part 3 - MVC Web Application & Deployment - COMPLETE
+**YouTube Link:** [INSERT YOUR PART 3 YOUTUBE LINK HERE]
+
+---
+
+## 📊 Commit Statistics
+
+| Part | Minimum Required | Actual Commits | Status |
+|------|------------------|----------------|--------|
+| Part 1 | 20 | 25+ | ✅ |
+| Part 2 | 20 | 20+ | ✅ |
+| Part 3 | 20 | 20+ | ✅ |
+
+---
+
+## 🛠️ Technology Stack (Full Project)
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | ASP.NET Core MVC, Bootstrap, Custom CSS |
+| Backend API | ASP.NET Core Web API (C#) |
+| Data Access | ADO.NET (`System.Data.SqlClient`) |
+| Database | SQL Server (SSMS) |
+| Authentication | Session-based + BCrypt |
+| Cloud Storage | Azure Blob Storage |
+| Testing | xUnit + Moq |
+| CI/CD | GitHub Actions |
+| Containerization | Docker |
+
+---
+
+## 📝 Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0 | 2026-09-03 | Initial Part 1 submission |
+| 2.0 | 2026-10-13 | Part 2 - RESTful API with authentication, 39 endpoints, and 18 unit tests |
+| 3.0 | 2026-11-05 | Part 3 - MVC Web App, Azure Blob Storage integration, and Docker containerization |
+
+---
+
+## 🔗 GitHub Repository
+
+**Repository Link:** https://github.com/pande26/raceday_management_system.git
+
+---
+
+## 👨‍💻 Author
+
+**Pandelani**
+- GitHub: [@pande26](https://github.com/pande26)
+
+---
+
+## 📄 License
+
+This project is created for academic purposes as part of the Portfolio of Evidence (POE) for the Software Development course.
+
+---
+
+## 🙏 Acknowledgements
+
+- South African road events community (Comrades Marathon, Cape Town Cycle Tour, Soweto Marathon, Two Oceans Marathon)
+- Lecturers and mentors providing guidance throughout the project
+
+---
+
+**✅ Part 1 - System Planning and Database - COMPLETE**
+
+**✅ Part 2 - RESTful API Development - COMPLETE**
+
+**✅ Part 3 - MVC Web Application & Deployment - COMPLETE**
