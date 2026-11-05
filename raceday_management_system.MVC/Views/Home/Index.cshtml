@@ -3,19 +3,38 @@
     ViewData["Title"] = "Upcoming Events";
 }
 
-<div class="container mt-4">
+<!-- Hero Banner -->
+<div class="hero-section text-white text-center d-flex align-items-center justify-content-center"
+     style="background: linear-gradient(rgba(13, 110, 253, 0.8), rgba(13, 110, 253, 0.8)), url('/images/hero-bg.jpeg') no-repeat center center; background-size: cover; height: 450px; margin-top: -24px; margin-bottom: 50px;">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Find Your Next Challenge</h1>
+        <p class="lead fs-4 mb-4 fw-semibold" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">Join thousands of runners, walkers, and cyclists across South Africa.</p>
+
+        @if (Context.Session.GetString("User_id") == null)
+        {
+            <a asp-controller="Auth" asp-action="Register" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg">Join RaceDay Today</a>
+        }
+        else
+        {
+            <a href="#upcoming-events" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg">Browse Events</a>
+        }
+    </div>
+</div>
+
+<!-- Events Grid -->
+<div class="container mt-4" id="upcoming-events">
     <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold text-primary">Upcoming Events</h1>
+        <h2 class="display-5 fw-bold text-primary">Upcoming Events</h2>
         <p class="lead text-muted">Find your next race, walk, or cycle in South Africa.</p>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-info text-center py-4 shadow-sm">
-            <h4>No upcoming events found.</h4>
+        <div class="alert alert-info text-center py-5 shadow-sm" style="border-radius: 16px;">
+            <h4 class="fw-bold">No upcoming events found.</h4>
             @if (Context.Session.GetString("User_id") == null)
             {
-                <p class="mb-0"><a asp-controller="Auth" asp-action="Login">Log in</a> to see upcoming events.</p>
+                <p class="mb-0">Please <a asp-controller="Auth" asp-action="Login" class="fw-bold text-decoration-none">Log in</a> to see upcoming events.</p>
             }
         </div>
     }
@@ -47,10 +66,9 @@
                             <p class="card-text text-muted mb-3">
                                 📍 @ev.Location
                             </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0 fw-bold text-success">R @ev.Entry_fee.ToString("0.00")</h6>
-                                <!-- Points to the events controller which we will build next -->
-                                <a asp-controller="events" asp-action="Details" asp-route-id="@ev.Event_id" class="btn btn-outline-primary">View Details</a>
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <h5 class="mb-0 fw-bold text-success">R @ev.Entry_fee.ToString("0.00")</h5>
+                                <a asp-controller="events" asp-action="Details" asp-route-id="@ev.Event_id" class="btn btn-outline-primary px-4">View Details</a>
                             </div>
                         </div>
                     </div>

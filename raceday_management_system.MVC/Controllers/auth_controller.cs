@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace raceday_management_system.MVC.Controllers
 {//start of namespace
-    [Route("Auth")] // This fixes the 404 URL error when clicking the nav links
+    [Route("Auth")]
     public class auth_controller : Controller
     {//start of class
         private readonly api_service _api_service;
