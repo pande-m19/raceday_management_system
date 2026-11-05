@@ -192,6 +192,18 @@ namespace raceday_management_system.MVC.Controllers
             return RedirectToAction("EventEnrolments", new { eventId = model.Event_id });
         }
 
+        //view results
+        [HttpGet("ViewResults/{eventId}")]
+        public async Task<IActionResult> ViewResults(int eventId)
+        {
+            if (HttpContext.Session.GetString("Role") != "Organiser") return RedirectToAction("Login", "Auth");
+
+            var results = await _api_service.get_async<List<my_result_view_model>>($"events/{eventId}/results");
+
+            ViewBag.EventId = eventId;
+            return View("~/Views/Organiser/ViewResults.cshtml", results ?? new List<my_result_view_model>());
+        }
+
     }//end of class
 
 }//end of namespace

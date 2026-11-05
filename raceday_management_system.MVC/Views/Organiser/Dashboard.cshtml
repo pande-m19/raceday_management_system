@@ -81,6 +81,9 @@
                                     <!-- Enrolments Button -->
                                     <a asp-action="EventEnrolments" asp-route-eventId="@ev.Event_id" class="btn btn-sm btn-outline-info">Enrolments</a>
 
+                                    <!-- NEW: Results Button -->
+                                    <a asp-action="ViewResults" asp-route-eventId="@ev.Event_id" class="btn btn-sm btn-outline-warning">Results</a>
+
                                     <!-- Edit Button -->
                                     <a asp-action="EditEvent" asp-route-id="@ev.Event_id" class="btn btn-sm btn-outline-primary">Edit</a>
 

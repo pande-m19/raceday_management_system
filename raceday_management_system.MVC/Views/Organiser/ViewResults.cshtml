@@ -1,0 +1,47 @@
+﻿@model List<raceday_management_system.MVC.Models.my_result_view_model>
+@{
+    ViewData["Title"] = "Event Results";
+    int eventId = ViewBag.EventId;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Event Results (Event #@eventId)</h3>
+        <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Overall Position</th>
+                        <th>Finish Time</th>
+                        <th>Total Finishers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var res in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold fs-5">
+                                    <span class="badge bg-primary">@res.Overall_position</span>
+                                </td>
+                                <td>@res.Finish_time</td>
+                                <td>@res.Total_finishers</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">No results recorded for this event yet.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
