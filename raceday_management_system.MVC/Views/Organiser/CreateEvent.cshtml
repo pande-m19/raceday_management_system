@@ -6,47 +6,47 @@
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Create New Event</h4>
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white rounded-top-4 py-3">
+                    <h5 class="mb-0 fw-bold">Create New Event</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form asp-action="CreateEvent" method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <div class="mb-3">
-                            <label asp-for="EventName" class="form-label">Event Name</label>
-                            <input asp-for="EventName" class="form-control" />
-                            <span asp-validation-for="EventName" class="text-danger"></span>
+                            <label asp-for="EventName" class="form-label fw-semibold">Event Name</label>
+                            <input asp-for="EventName" class="form-control" placeholder="e.g. Comrades Marathon" />
+                            <span asp-validation-for="EventName" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="EventDescription" class="form-label">Description</label>
-                            <textarea asp-for="EventDescription" class="form-control" rows="3"></textarea>
-                            <span asp-validation-for="EventDescription" class="text-danger"></span>
+                            <label asp-for="EventDescription" class="form-label fw-semibold">Description</label>
+                            <textarea asp-for="EventDescription" class="form-control" rows="3" placeholder="Describe the event..."></textarea>
+                            <span asp-validation-for="EventDescription" class="text-danger small"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="EventDate" class="form-label">Date and Time</label>
+                                <label asp-for="EventDate" class="form-label fw-semibold">Date and Time</label>
                                 <input asp-for="EventDate" type="datetime-local" class="form-control" />
-                                <span asp-validation-for="EventDate" class="text-danger"></span>
+                                <span asp-validation-for="EventDate" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label asp-for="Location" class="form-label">Location</label>
-                                <input asp-for="Location" class="form-control" />
-                                <span asp-validation-for="Location" class="text-danger"></span>
+                                <label asp-for="Location" class="form-label fw-semibold">Location</label>
+                                <input asp-for="Location" class="form-control" placeholder="e.g. Cape Town" />
+                                <span asp-validation-for="Location" class="text-danger small"></span>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label asp-for="Distance" class="form-label">Distance (km)</label>
-                                <input asp-for="Distance" class="form-control" />
-                                <span asp-validation-for="Distance" class="text-danger"></span>
+                                <label asp-for="Distance" class="form-label fw-semibold">Distance (km)</label>
+                                <input asp-for="Distance" class="form-control" placeholder="e.g. 21.1" />
+                                <span asp-validation-for="Distance" class="text-danger small"></span>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label asp-for="EventType" class="form-label">Event Type</label>
+                                <label asp-for="EventType" class="form-label fw-semibold">Event Type</label>
                                 <select asp-for="EventType" class="form-select">
                                     <option value="Run">Run</option>
                                     <option value="Walk">Walk</option>
@@ -54,26 +54,38 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label asp-for="EntryFee" class="form-label">Entry Fee (R)</label>
-                                <input asp-for="EntryFee" class="form-control" />
+                                <label asp-for="EntryFee" class="form-label fw-semibold">Entry Fee (R)</label>
+                                <input asp-for="EntryFee" class="form-control" placeholder="e.g. 150.00" />
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row mb-4">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="MaxParticipants" class="form-label">Max Participants</label>
-                                <input asp-for="MaxParticipants" class="form-control" />
+                                <label asp-for="MaxParticipants" class="form-label fw-semibold">Max Participants</label>
+                                <input asp-for="MaxParticipants" class="form-control" placeholder="e.g. 500" />
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label asp-for="BannerFile" class="form-label">Event Banner Image</label>
-                                <input asp-for="BannerFile" type="file" class="form-control" accept="image/*" />
-                                <span asp-validation-for="BannerFile" class="text-danger"></span>
+                                <label asp-for="BannerFile" class="form-label fw-semibold">Event Banner Image</label>
+                                
+                                <!-- Hidden native file input -->
+                                <input asp-for="BannerFile" type="file" id="bannerUpload" accept="image/*" 
+                                       style="display: none;" onchange="updateFileName(this)" />
+                                       
+                                <!-- Custom Blue Button that triggers the hidden input -->
+                                <label for="bannerUpload" class="btn btn-primary w-100 py-2 fw-bold">
+                                    Upload Banner
+                                </label>
+                                
+                                <!-- Shows the selected file name -->
+                                <div id="fileNameDisplay" class="form-text text-muted mt-1 text-center" style="font-size: 0.85rem;">No file chosen</div>
+                                <span asp-validation-for="BannerFile" class="text-danger small"></span>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-success">Create Event & Upload Banner</button>
+                            <a asp-action="Dashboard" class="btn btn-outline-secondary px-4 fw-bold">Cancel</a>
+                            <!-- Changed to "Create Event" only -->
+                            <button type="submit" class="btn btn-success px-4 fw-bold">Create Event</button>
                         </div>
                     </form>
                 </div>
@@ -84,4 +96,11 @@
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script>
+        // This script updates the "No file chosen" text when a user selects a banner
+        function updateFileName(input) {
+            var fileName = input.files[0] ? input.files[0].name : "No file chosen";
+            document.getElementById('fileNameDisplay').textContent = fileName;
+        }
+    </script>
 }

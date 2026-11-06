@@ -9,100 +9,112 @@
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["ErrorMessage"]
+            <i class="bi bi-exclamation-octagon-fill me-2"></i>@TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Dashboard</h2>
-        <a asp-action="CreateEvent" class="btn btn-primary">+ Create New Event</a>
+        <h2 class="fw-bold">Dashboard</h2>
+        <a asp-action="CreateEvent" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create New Event</a>
     </div>
 
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card text-white bg-primary shadow">
-                <div class="card-body">
-                    <h5 class="card-title">Total Events</h5>
-                    <h1 class="display-4">@Model.TotalEvents</h1>
+            <div class="card text-white bg-primary shadow border-0 rounded-4">
+                <div class="card-body p-4 position-relative">
+                    <h5 class="card-title text-white-50">Total Events</h5>
+                    <h1 class="display-4 fw-bold mb-0">@Model.TotalEvents</h1>
+                    <i class="bi bi-calendar2-week position-absolute top-0 end-0 p-4 opacity-25" style="font-size: 5rem;"></i>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card text-white bg-success shadow">
-                <div class="card-body">
-                    <h5 class="card-title">Total Enrolments</h5>
-                    <h1 class="display-4">@Model.TotalEnrolments</h1>
+            <div class="card text-white bg-success shadow border-0 rounded-4">
+                <div class="card-body p-4 position-relative">
+                    <h5 class="card-title text-white-50">Total Enrolments</h5>
+                    <h1 class="display-4 fw-bold mb-0">@Model.TotalEnrolments</h1>
+                    <i class="bi bi-people position-absolute top-0 end-0 p-4 opacity-25" style="font-size: 5rem;"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card shadow">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">Your Events</h5>
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-dark text-white rounded-top-4 py-3">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-list-ul me-2"></i>Your Events</h5>
         </div>
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Event Name</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Enrolments</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.EventsSummary != null && Model.EventsSummary.Any())
-                    {
-                        foreach (var ev in Model.EventsSummary)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Event Name</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Enrolments</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.EventsSummary != null && Model.EventsSummary.Any())
+                        {
+                            foreach (var ev in Model.EventsSummary)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-dark">@ev.Event_name</td>
+                                    <td>@ev.Event_date.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        <span class="badge @(ev.Event_status == "Upcoming" ? "bg-success" : "bg-secondary")">
+                                            @ev.Event_status
+                                        </span>
+                                    </td>
+                                    <td><span class="fw-semibold">@ev.Total_enrolments</span></td>
+                                    <td class="text-end pe-4" style="white-space: nowrap;">
+                                        
+                                        <!-- Action Buttons with Text -->
+                                        <a asp-action="ManageCategories" asp-route-eventId="@ev.Event_id" class="btn btn-sm btn-outline-secondary mb-1">
+                                            Categories
+                                        </a>
+                                        <a asp-action="EventEnrolments" asp-route-eventId="@ev.Event_id" class="btn btn-sm btn-outline-info mb-1">
+                                            Enrolments
+                                        </a>
+                                        <a asp-action="ViewResults" asp-route-eventId="@ev.Event_id" class="btn btn-sm btn-outline-warning mb-1">
+                                            Results
+                                        </a>
+                                        <a asp-action="EditEvent" asp-route-id="@ev.Event_id" class="btn btn-sm btn-outline-primary mb-1">
+                                            Edit
+                                        </a>
+                                        
+                                        <form asp-action="DeleteEvent" asp-route-id="@ev.Event_id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger mb-1">
+                                                Delete
+                                            </button>
+                                        </form>
+                                        
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td class="fw-bold">@ev.Event_name</td>
-                                <td>@ev.Event_date.ToString("dd MMM yyyy")</td>
-                                <td>
-                                    <span class="badge @(ev.Event_status == "Upcoming" ? "bg-success" : "bg-secondary")">
-                                        @ev.Event_status
-                                    </span>
-                                </td>
-                                <td>@ev.Total_enrolments</td>
-                                <td>
-                                    <!-- Categories Button -->
-                                    <a asp-action="ManageCategories" asp-route-eventId="@ev.Event_id" class="btn btn-sm btn-outline-secondary">Categories</a>
-
-                                    <!-- Enrolments Button -->
-                                    <a asp-action="EventEnrolments" asp-route-eventId="@ev.Event_id" class="btn btn-sm btn-outline-info">Enrolments</a>
-
-                                    <!-- NEW: Results Button -->
-                                    <a asp-action="ViewResults" asp-route-eventId="@ev.Event_id" class="btn btn-sm btn-outline-warning">Results</a>
-
-                                    <!-- Edit Button -->
-                                    <a asp-action="EditEvent" asp-route-id="@ev.Event_id" class="btn btn-sm btn-outline-primary">Edit</a>
-
-                                    <!-- Delete Button with Confirmation -->
-                                    <form asp-action="DeleteEvent" asp-route-id="@ev.Event_id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this event?');">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                                    </form>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+                                    No events created yet.
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">No events created yet.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

@@ -3,86 +3,131 @@
     ViewData["Title"] = Model.Event_name;
 }
 
-<div class="container mt-4">
+<div class="container mt-5 mb-5">
     <!-- Alerts -->
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
             @TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
             @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <div class="row">
-        <!-- Event Image -->
-        <div class="col-md-6 mb-4">
+    <div class="row g-5">
+        <!-- Event Image (Left Side) -->
+        <div class="col-lg-7">
             @if (!string.IsNullOrEmpty(Model.Banner_image_url))
             {
-                <img src="@Model.Banner_image_url" class="img-fluid rounded shadow" alt="@Model.Event_name">
+                <img src="@Model.Banner_image_url" class="img-fluid rounded-4 shadow-lg w-100" style="object-fit: cover; max-height: 500px;" alt="@Model.Event_name">
             }
             else
             {
-                <div class="bg-secondary text-white rounded d-flex justify-content-center align-items-center shadow" style="height: 300px;">
-                    <span>No Image Available</span>
+                <div class="bg-secondary text-white rounded-4 d-flex justify-content-center align-items-center shadow-lg w-100" style="height: 400px;">
+                    <span class="fs-4">No Image Available</span>
                 </div>
             }
         </div>
 
-        <!-- Event Details -->
-        <div class="col-md-6">
-            <span class="badge bg-primary mb-2">@Model.Event_type</span>
-            <h1 class="fw-bold">@Model.Event_name</h1>
-            <p class="lead text-muted">@Model.Event_description</p>
+        <!-- Event Details (Right Side) -->
+        <div class="col-lg-5">
+            <div class="d-flex align-items-center mb-3">
+                <span class="badge bg-primary text-white px-3 py-2 rounded-pill shadow-sm fs-6">
+                    @Model.Event_type
+                </span>
+            </div>
+            
+            <h1 class="fw-bolder mb-3 text-dark" style="letter-spacing: -1px;">@Model.Event_name</h1>
+            <p class="text-muted fs-5 mb-4" style="line-height: 1.6;">@Model.Event_description</p>
 
-            <ul class="list-group list-group-flush mb-4 shadow-sm">
-                <li class="list-group-item"><strong>📅 Date:</strong> @Model.Event_date.ToString("dd MMMM yyyy - HH:mm")</li>
-                <li class="list-group-item"><strong>📍 Location:</strong> @Model.Location</li>
-                <li class="list-group-item"><strong>🏃 Distance:</strong> @Model.Distance km</li>
-                <li class="list-group-item"><strong>💰 Entry Fee:</strong> R @Model.Entry_fee.ToString("0.00")</li>
-            </ul>
+            <!-- Icon Grid (Replacing Emojis) -->
+            <div class="row g-3 mb-5 bg-white p-4 rounded-4 shadow-sm">
+                <div class="col-sm-6 d-flex align-items-center">
+                    <div class="bg-light rounded-circle p-3 me-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                        <img src="~/images/icons/icon-date.png" alt="Date" style="width: 24px; height: 24px;" />
+                    </div>
+                    <div>
+                        <small class="text-muted d-block fw-semibold">Date & Time</small>
+                        <span class="fw-bold text-dark">@Model.Event_date.ToString("dd MMM yyyy")</span><br />
+                        <small class="text-muted">@Model.Event_date.ToString("HH:mm")</small>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 d-flex align-items-center">
+                    <div class="bg-light rounded-circle p-3 me-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                        <img src="~/images/icons/icon-distance.png" alt="Distance" style="width: 24px; height: 24px;" />
+                    </div>
+                    <div>
+                        <small class="text-muted d-block fw-semibold">Distance</small>
+                        <span class="fw-bold text-dark">@Model.Distance km</span>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 d-flex align-items-center">
+                    <div class="bg-light rounded-circle p-3 me-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                        <img src="~/images/icons/icon-location.png" alt="Location" style="width: 24px; height: 24px;" />
+                    </div>
+                    <div>
+                        <small class="text-muted d-block fw-semibold">Location</small>
+                        <span class="fw-bold text-dark">@Model.Location</span>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 d-flex align-items-center">
+                    <div class="bg-light rounded-circle p-3 me-3 d-flex justify-content-center align-items-center" style="width: 50px; height: 50px;">
+                        <img src="~/images/icons/icon-fee.png" alt="Fee" style="width: 24px; height: 24px;" />
+                    </div>
+                    <div>
+                        <small class="text-muted d-block fw-semibold">Entry Fee</small>
+                        <span class="fw-bold text-success">R @Model.Entry_fee.ToString("0.00")</span>
+                    </div>
+                </div>
+            </div>
 
             <!-- Enrolment Logic -->
             @if (Context.Session.GetString("User_id") == null)
             {
-                <div class="alert alert-warning">You must be logged in to enrol.</div>
-                <a asp-controller="Auth" asp-action="Login" class="btn btn-primary w-100">Log In to Enrol</a>
+                <div class="alert alert-warning rounded-3 shadow-sm">You must be logged in to enrol.</div>
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-primary w-100 py-3 fs-5 rounded-3 shadow">Log In to Enrol</a>
             }
             else if (Context.Session.GetString("Role") == "Organiser")
             {
-                <div class="alert alert-info">Organisers cannot enrol in events.</div>
+                <div class="alert alert-info rounded-3 shadow-sm">Organisers cannot enrol in events.</div>
             }
             else if (Model.IsEnrolled)
             {
-                <div class="alert alert-success fw-bold text-center py-3">
-                    ✅ You are already enrolled in this event!
+                <!-- UPDATED: Replaced Emoji with Custom Icon -->
+                <div class="alert alert-success fw-bold text-center py-4 rounded-4 shadow-sm fs-5 d-flex justify-content-center align-items-center">
+                    <img src="~/images/icons/icon-check.png" alt="Success" class="me-2" style="width: 28px; height: 28px;" />
+                    You are already enrolled in this event!
                 </div>
-                <!-- UPDATED: Fixed text and linked to actual My Events page -->
-                <a asp-controller="Participant" asp-action="MyEvents" class="btn btn-outline-success w-100">View My Events</a>
+                <a asp-controller="Participant" asp-action="MyEvents" class="btn btn-outline-success w-100 py-3 fs-5 rounded-3 fw-bold">View My Events</a>
             }
             else
             {
-                <div class="card shadow-sm border-primary">
-                    <div class="card-header bg-primary text-white">Enrol Now</div>
-                    <div class="card-body">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
+                        <h5 class="mb-0 fw-bold">Secure Your Spot</h5>
+                    </div>
+                    <div class="card-body p-4">
                         <form asp-controller="events" asp-action="Enrol" asp-route-id="@Model.Event_id" method="post">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Select a Category</label>
-                                <select name="categoryId" class="form-select" required>
-                                    <option value="">-- Select Category --</option>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold text-muted">Select a Category</label>
+                                <select name="categoryId" class="form-select form-select-lg shadow-sm" required>
+                                    <option value="">-- Choose Category --</option>
                                     @foreach (var cat in Model.Categories)
                                     {
                                         <option value="@cat.Category_id">@cat.Category_name</option>
                                     }
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-success w-100 fw-bold">Confirm Enrolment</button>
+                            <button type="submit" class="btn btn-success w-100 py-3 fs-5 rounded-3 fw-bold shadow">Confirm Enrolment</button>
                         </form>
                     </div>
                 </div>
