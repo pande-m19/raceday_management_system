@@ -10,9 +10,10 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <!-- Brand Logo -->
+        <!-- Added sticky-top for a modern scrolling experience -->
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 sticky-top">
+            <div class="container-fluid px-4">
+                <!-- Brand Logo (Clicking this goes Home) -->
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <div class="logo-container">
                         <img src="~/images/logo.png" alt="RaceDay Logo" />
@@ -26,25 +27,22 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
                     <!-- Left Side Navigation -->
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-
+                    <ul class="navbar-nav flex-grow-1 ms-4">
+                        <!-- REMOVED: The "Home" button that used to be here -->
                         <!-- Navigation links based on Role -->
                         @if (Context.Session.GetString("Role") == "Organiser")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Organiser" asp-action="Dashboard">Dashboard</a>
+                                <a class="nav-link fw-semibold text-dark" asp-controller="Organiser" asp-action="Dashboard">Dashboard</a>
                             </li>
                         }
                         else if (Context.Session.GetString("Role") == "Participant")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Participant" asp-action="MyEvents">My Events</a>
+                                <a class="nav-link fw-semibold text-dark" asp-controller="Participant" asp-action="MyEvents">My Events</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Participant" asp-action="MyResults">My Results</a>
+                                <a class="nav-link fw-semibold text-dark" asp-controller="Participant" asp-action="MyResults">My Results</a>
                             </li>
                         }
                     </ul>
@@ -59,8 +57,8 @@
                                 <a asp-controller="profile" asp-action="Index" class="nav-link p-0" title="My Profile">
                                     <img src="@(Context.Session.GetString("ProfilePicture") ?? "/images/default-profile.png")"
                                          alt="Profile"
-                                         class="rounded-circle shadow-sm"
-                                         style="width: 40px; height: 40px; object-fit: cover;" />
+                                         class="rounded-circle shadow-sm border border-2 border-light"
+                                         style="width: 42px; height: 42px; object-fit: cover;" />
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -72,11 +70,11 @@
                         else
                         {
                             <!-- User is logged out -->
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-primary px-4 rounded-pill fw-bold" asp-controller="Auth" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Register">Register</a>
+                                <a class="btn btn-outline-primary px-4 rounded-pill fw-bold" asp-controller="Auth" asp-action="Register">Register</a>
                             </li>
                         }
                     </ul>
@@ -84,15 +82,15 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container px-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted mt-5">
-        <div class="container">
-            &copy; 2026 - RaceDay - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container px-4 text-center">
+            &copy; 2026 - <span class="fw-bold text-primary">RaceDay</span> - <a class="text-decoration-none text-muted" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

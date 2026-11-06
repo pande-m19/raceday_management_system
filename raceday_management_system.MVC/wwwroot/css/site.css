@@ -3,6 +3,7 @@
 html {
     font-size: 14px;
     min-height: 100vh;
+    scroll-behavior: smooth;
 }
 
 @media (min-width: 768px) {
@@ -15,130 +16,85 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: #f4f7f6; /* Very soft gray/blue background */
     color: #333;
-    /* NEW: Flexbox layout to permanently fix footer overlap */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     margin-bottom: 0;
 }
 
-/* NEW: Pushes the footer to the bottom of the page */
 .container {
     flex: 1 0 auto;
 }
 
-/* buttons and forms */
+/* --- buttons --- */
 .btn {
     border-radius: 8px;
     font-weight: 600;
-    padding: 8px 20px;
-    transition: all 0.2s ease-in-out;
+    padding: 10px 24px;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
 }
 
 .btn-primary {
     background-color: #0d6efd;
     border-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
 }
 
     .btn-primary:hover {
         background-color: #0b5ed7;
         border-color: #0b5ed7;
-        transform: translateY(-1px);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(13, 110, 253, 0.3);
     }
 
 .btn-success {
-    border-radius: 8px;
-    font-weight: 600;
+    background-color: #198754;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2);
 }
 
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(25, 135, 84, 0.3);
+    }
+
+/* --- forms and inputs --- */
 .form-control, .form-select {
     border-radius: 8px;
     border: 1px solid #ced4da;
-    padding: 10px 15px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
 }
 
     .form-control:focus, .form-select:focus {
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        background-color: #fff;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
         border-color: #0d6efd;
     }
 
-/* cards and shadows */
+/* --- cards --- */
 .card {
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    overflow: hidden;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* Soft, modern shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #ffffff;
 }
 
-    .card:hover {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    /* Auth cards (Login/Register) get a special hover effect */
+    .card.shadow-sm:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08) !important;
     }
 
 .card-header {
+    border-radius: 16px 16px 0 0 !important;
     font-weight: 600;
-    border-bottom: 1px solid #e9ecef;
 }
 
-    .card-header.bg-dark {
-        background-color: #1a1e23 !important;
-        color: white;
-    }
-
-/* tables */
-.table {
-    margin-bottom: 0;
-}
-
-    .table th {
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        letter-spacing: 0.5px;
-        color: #6c757d;
-        border-bottom: 2px solid #e9ecef;
-        padding: 15px;
-    }
-
-    .table td {
-        padding: 15px;
-        vertical-align: middle;
-    }
-
-.table-hover tbody tr:hover {
-    background-color: rgba(13, 110, 253, 0.03);
-}
-
-/* badger */
-.badge {
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
-    .badge.bg-success {
-        background-color: #d1e7dd !important;
-        color: #0f5132 !important;
-    }
-    /* Confirmed = Green */
-    .badge.bg-warning {
-        background-color: #fff3cd !important;
-        color: #856404 !important;
-    }
-    /* Pending = Amber */
-    .badge.bg-secondary {
-        background-color: #e2e3e5 !important;
-        color: #383d41 !important;
-    }
-    /* Cancelled = Gray */
-    .badge.bg-primary {
-        background-color: #cfe2ff !important;
-        color: #084298 !important;
-    }
-/* Event Type = Blue */
-
-/* navbar and logo */
+/* --- navbar --- */
 .navbar {
     background-color: #ffffff !important;
     border-bottom: 1px solid #e9ecef !important;
@@ -173,18 +129,57 @@ body {
 .nav-link {
     font-weight: 500;
     color: #495057 !important;
+    transition: color 0.2s ease;
 }
 
     .nav-link:hover {
         color: #0d6efd !important;
     }
 
-/* footer */
+/* --- tables and badges --- */
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    border-bottom: 2px solid #e9ecef;
+    padding: 15px;
+}
+
+.table td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.badge {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.3px;
+}
+
+    .badge.bg-success {
+        background-color: #d1e7dd !important;
+        color: #0f5132 !important;
+    }
+
+    .badge.bg-warning {
+        background-color: #fff3cd !important;
+        color: #856404 !important;
+    }
+
+    .badge.bg-secondary {
+        background-color: #e2e3e5 !important;
+        color: #383d41 !important;
+    }
+
+/* --- footer --- */
 .footer {
     background-color: #ffffff;
     border-top: 1px solid #e9ecef;
     padding: 20px 0;
-    /* NEW: Prevents the footer from floating over content */
     position: static !important;
     flex-shrink: 0;
     margin-top: 40px;
