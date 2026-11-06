@@ -164,6 +164,19 @@ namespace raceday_management_system.MVC.Controllers
             return View("~/Views/Organiser/EventEnrolments.cshtml", enrolments ?? new List<enrolment_view_model>());
         }
 
+        //update payment status
+        [HttpPost("UpdatePaymentStatus/{enrolmentId}")]
+        public async Task<IActionResult> UpdatePaymentStatus(int enrolmentId, int eventId, string paymentStatus)
+        {//start of UpdatePaymentStatus()
+            if (HttpContext.Session.GetString("Role") != "Organiser") return RedirectToAction("Login", "Auth");
+
+            string query = $"enrolments/{enrolmentId}/payment?paymentStatus={Uri.EscapeDataString(paymentStatus)}";
+            await _api_service.put_async(query, new { });
+
+            TempData["SuccessMessage"] = "Payment status updated successfully!";
+            return RedirectToAction("EventEnrolments", new { eventId = eventId });
+        }//end of UpdatePaymentStatus()
+
         //record results
         [HttpGet("RecordResult/{enrolmentId}")]
         public IActionResult RecordResult(int enrolmentId, int eventId)

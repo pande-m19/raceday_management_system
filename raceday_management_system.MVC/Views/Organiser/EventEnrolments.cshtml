@@ -5,47 +5,77 @@
 }
 
 <div class="container mt-4">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Enrolments for Event #@eventId</h3>
-        <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+        <h3 class="fw-bold">Enrolments for Event #@eventId</h3>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary rounded-pill fw-bold px-4">Back to Dashboard</a>
     </div>
 
-    <div class="card shadow">
+    <div class="card shadow border-0 rounded-4">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Enrolment ID</th>
-                        <th>Participant ID</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Payment</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.Any())
-                    {
-                        foreach (var item in Model)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Enrolment ID</th>
+                            <th>Participant ID</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Payment Status</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold">#@item.Enrolment_id</td>
+                                    <td>@item.Participant_id</td>
+                                    <td>@item.Enrolment_date.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        <span class="badge bg-success">@item.Enr_status</span>
+                                    </td>
+                                    <td>
+                                        <!-- Dropdown for Payment Status -->
+                                        <form asp-action="UpdatePaymentStatus" asp-route-enrolmentId="@item.Enrolment_id" asp-route-eventId="@eventId" method="post" class="m-0">
+                                            <select name="paymentStatus" 
+                                                    class="form-select form-select-sm fw-bold shadow-sm @(item.Payment_status == "Paid" ? "text-success border-success" : "text-warning border-warning")" 
+                                                    onchange="this.form.submit()" 
+                                                    style="width: 130px;">
+                                                
+                                                <option value="Pending" selected="@(item.Payment_status == "Pending" ? "selected" : null)">Pending</option>
+                                                <option value="Paid" selected="@(item.Payment_status == "Paid" ? "selected" : null)">Paid</option>
+                                                <option value="Refunded" selected="@(item.Payment_status == "Refunded" ? "selected" : null)">Refunded</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a asp-action="RecordResult" asp-route-enrolmentId="@item.Enrolment_id" asp-route-eventId="@eventId" class="btn btn-sm btn-primary rounded-pill px-3">Record Result</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>@item.Enrolment_id</td>
-                                <td>@item.Participant_id</td>
-                                <td>@item.Enrolment_date.ToString("dd MMM yyyy")</td>
-                                <td><span class="badge bg-success">@item.Enr_status</span></td>
-                                <td>@item.Payment_status</td>
-                                <td>
-                                    <a asp-action="RecordResult" asp-route-enrolmentId="@item.Enrolment_id" asp-route-eventId="@eventId" class="btn btn-sm btn-primary">Record Result</a>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-people fs-1 d-block mb-3 text-secondary"></i>
+                                    No enrolments yet.
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr><td colspan="6" class="text-center text-muted py-3">No enrolments yet.</td></tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
