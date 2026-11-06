@@ -20,15 +20,15 @@ namespace raceday_management_system.MVC.Controllers
         public async Task<IActionResult> Details(int id)
         {//start of Details()
 
-            // 1. Fetch the event details
+            //Fetch the event details
             var eventData = await _api_service.get_async<event_details_view_model>($"events/{id}");
             if (eventData == null) return NotFound();
 
-            // 2. Fetch the categories for this event
+            //Fetch the categories for this event
             var categories = await _api_service.get_async<List<category_view_model>>($"events/{id}/categories");
             eventData.Categories = categories ?? new List<category_view_model>();
 
-            // 3. Check if the logged-in user is already enrolled
+            //Check if the logged-in user is already enrolled
             if (HttpContext.Session.GetString("Role") == "Participant")
             {
                 // Use strongly typed model to prevent the dynamic JSON exception
@@ -70,6 +70,21 @@ namespace raceday_management_system.MVC.Controllers
             return RedirectToAction("Details", new { id = id });
 
         }//end of Enrol()
+
+        [HttpGet("AllEvents")]
+        public async Task<IActionResult> AllEvents()
+        {//start of AllEvents()
+
+            // Ensure the user is logged in to view all events
+            if (HttpContext.Session.GetString("User_id") == null)
+                return RedirectToAction("Login", "Auth");
+
+            // Fetch ALL events from the API
+            var allEvents = await _api_service.get_async<List<event_card_view_model>>("events");
+
+            return View("~/Views/Events/AllEvents.cshtml", allEvents ?? new List<event_card_view_model>());
+
+        }//end of AllEvents()
 
     }//end of class
 
