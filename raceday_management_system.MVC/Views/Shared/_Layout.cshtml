@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/raceday_management_system.MVC.styles.css" asp-append-version="true" />
 
-    <!--Bootstrap Icons CDN -->
+    <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
@@ -33,28 +33,29 @@
 
                     <!-- Left Side Navigation -->
                     <ul class="navbar-nav flex-grow-1 ms-4">
-                        <!-- Navigation links based on Role -->
+
+                        <!-- All Events (Visible to everyone logged in) -->
+                        @if (Context.Session.GetString("User_id") != null)
+                        {
+                            <li class="nav-item me-3">
+                                <a class="nav-link fw-semibold text-dark" asp-controller="events" asp-action="AllEvents">All Events</a>
+                            </li>
+                        }
+
+                        <!-- Role-Specific Links -->
                         @if (Context.Session.GetString("Role") == "Organiser")
                         {
-                            <li class="nav-item">
+                            <li class="nav-item me-3">
                                 <a class="nav-link fw-semibold text-dark" asp-controller="Organiser" asp-action="Dashboard">Dashboard</a>
                             </li>
                         }
                         else if (Context.Session.GetString("Role") == "Participant")
                         {
-                            <li class="nav-item">
+                            <li class="nav-item me-3">
                                 <a class="nav-link fw-semibold text-dark" asp-controller="Participant" asp-action="MyEvents">My Events</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item me-3">
                                 <a class="nav-link fw-semibold text-dark" asp-controller="Participant" asp-action="MyResults">My Results</a>
-                            </li>
-                        }
-
-                        <!-- NEW: All Events Link for any logged-in user -->
-                        @if (Context.Session.GetString("User_id") != null)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link fw-semibold text-dark" asp-controller="events" asp-action="AllEvents">All Events</a>
                             </li>
                         }
                     </ul>

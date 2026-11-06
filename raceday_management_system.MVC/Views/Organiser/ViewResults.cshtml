@@ -5,43 +5,48 @@
 }
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Event Results (Event #@eventId)</h3>
-        <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">Event Results (Event #@eventId)</h3>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary rounded-pill fw-bold px-4">Back to Dashboard</a>
     </div>
 
-    <div class="card shadow">
+    <div class="card shadow border-0 rounded-4">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Overall Position</th>
-                        <th>Finish Time</th>
-                        <th>Total Finishers</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var res in Model)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 py-3">Overall Position</th>
+                            <th class="py-3">Finish Time</th>
+                            <th class="py-3">Total Finishers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var res in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold fs-5 py-4">
+                                        <span class="badge bg-primary rounded-pill px-3 py-2">@res.Overall_position</span>
+                                    </td>
+                                    <td class="fw-semibold text-success fs-6">@res.Finish_time</td>
+                                    <td class="text-muted">@res.Total_finishers</td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td class="fw-bold fs-5">
-                                    <span class="badge bg-primary">@res.Overall_position</span>
+                                <td colspan="3" class="text-center py-5 text-muted">
+                                    <i class="bi bi-trophy fs-1 d-block mb-3 text-secondary"></i>
+                                    No results recorded for this event yet.
                                 </td>
-                                <td>@res.Finish_time</td>
-                                <td>@res.Total_finishers</td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="3" class="text-center py-4 text-muted">No results recorded for this event yet.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

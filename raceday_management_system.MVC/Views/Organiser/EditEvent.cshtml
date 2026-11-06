@@ -4,49 +4,54 @@
 }
 
 <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">Edit Event: @Model.Event_name</h3>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary rounded-pill fw-bold px-4">Back to Dashboard</a>
+    </div>
+
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0">Edit Event: @Model.Event_name</h4>
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-warning text-dark rounded-top-4 py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i>Update Event Details</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form asp-action="EditEvent" asp-route-id="@Model.Event_id" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <div class="mb-3">
-                            <label asp-for="Event_name" class="form-label">Event Name</label>
+                            <label asp-for="Event_name" class="form-label fw-semibold">Event Name</label>
                             <input asp-for="Event_name" class="form-control" />
-                            <span asp-validation-for="Event_name" class="text-danger"></span>
+                            <span asp-validation-for="Event_name" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Event_description" class="form-label">Description</label>
+                            <label asp-for="Event_description" class="form-label fw-semibold">Description</label>
                             <textarea asp-for="Event_description" class="form-control" rows="3"></textarea>
-                            <span asp-validation-for="Event_description" class="text-danger"></span>
+                            <span asp-validation-for="Event_description" class="text-danger small"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="Event_date" class="form-label">Date and Time</label>
+                                <label asp-for="Event_date" class="form-label fw-semibold">Date and Time</label>
                                 <input asp-for="Event_date" type="datetime-local" class="form-control" />
-                                <span asp-validation-for="Event_date" class="text-danger"></span>
+                                <span asp-validation-for="Event_date" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label asp-for="Location" class="form-label">Location</label>
+                                <label asp-for="Location" class="form-label fw-semibold">Location</label>
                                 <input asp-for="Location" class="form-control" />
-                                <span asp-validation-for="Location" class="text-danger"></span>
+                                <span asp-validation-for="Location" class="text-danger small"></span>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label asp-for="Distance" class="form-label">Distance (km)</label>
+                                <label asp-for="Distance" class="form-label fw-semibold">Distance (km)</label>
                                 <input asp-for="Distance" class="form-control" />
-                                <span asp-validation-for="Distance" class="text-danger"></span>
+                                <span asp-validation-for="Distance" class="text-danger small"></span>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label asp-for="Event_type" class="form-label">Event Type</label>
+                                <label asp-for="Event_type" class="form-label fw-semibold">Event Type</label>
                                 <select asp-for="Event_type" class="form-select">
                                     <option value="Run">Run</option>
                                     <option value="Walk">Walk</option>
@@ -54,18 +59,18 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label asp-for="Entry_fee" class="form-label">Entry Fee (R)</label>
+                                <label asp-for="Entry_fee" class="form-label fw-semibold">Entry Fee (R)</label>
                                 <input asp-for="Entry_fee" class="form-control" />
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Max_participants" class="form-label">Max Participants</label>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="Max_participants" class="form-label fw-semibold">Max Participants</label>
                                 <input asp-for="Max_participants" class="form-control" />
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Event_status" class="form-label">Event Status</label>
+                            <div class="col-md-6">
+                                <label asp-for="Event_status" class="form-label fw-semibold">Event Status</label>
                                 <select asp-for="Event_status" class="form-select">
                                     <option value="Upcoming">Upcoming</option>
                                     <option value="Ongoing">Ongoing</option>
@@ -75,9 +80,9 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-warning">Save Changes</button>
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <a asp-action="Dashboard" class="btn btn-outline-secondary rounded-pill fw-bold px-4">Cancel</a>
+                            <button type="submit" class="btn btn-warning rounded-pill fw-bold px-5 text-dark">Save Changes</button>
                         </div>
                     </form>
                 </div>

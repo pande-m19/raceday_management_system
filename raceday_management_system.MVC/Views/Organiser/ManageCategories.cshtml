@@ -5,38 +5,43 @@
 }
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Manage Categories (Event #@eventId)</h3>
-        <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">Manage Categories (Event #@eventId)</h3>
+        <a asp-action="Dashboard" class="btn btn-outline-secondary rounded-pill fw-bold px-4">Back to Dashboard</a>
     </div>
 
-    <div class="row">
+    <div class="row g-4">
         <!-- Existing Categories -->
         <div class="col-md-7">
-            <div class="card shadow">
-                <div class="card-header bg-dark text-white">Current Categories</div>
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-dark text-white rounded-top-4 py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-tags me-2"></i>Current Categories</h5>
+                </div>
                 <ul class="list-group list-group-flush">
                     @if (Model.Any())
                     {
                         foreach (var cat in Model)
                         {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-4">
                                 <div>
-                                    <strong>@cat.Category_name</strong>
+                                    <h6 class="fw-bold mb-1 text-dark">@cat.Category_name</h6>
                                     @if (cat.Min_age.HasValue && cat.Max_age.HasValue)
                                     {
-                                        <span class="text-muted">(Ages: @cat.Min_age - @cat.Max_age)</span>
+                                        <span class="text-muted small"><i class="bi bi-person me-1"></i>Ages: @cat.Min_age - @cat.Max_age</span>
                                     }
                                 </div>
                                 <form asp-action="DeleteCategory" asp-route-categoryId="@cat.Category_id" asp-route-eventId="@eventId" method="post">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold">Delete</button>
                                 </form>
                             </li>
                         }
                     }
                     else
                     {
-                        <li class="list-group-item text-muted">No categories added yet.</li>
+                        <li class="list-group-item text-center py-5 text-muted">
+                            <i class="bi bi-tag fs-1 d-block mb-3 text-secondary"></i>
+                            No categories added yet.
+                        </li>
                     }
                 </ul>
             </div>
@@ -44,29 +49,31 @@
 
         <!-- Add Category Form -->
         <div class="col-md-5">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">Add New Category</div>
-                <div class="card-body">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-header bg-primary text-white rounded-top-4 py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle me-2"></i>Add New Category</h5>
+                </div>
+                <div class="card-body p-4">
                     <form asp-action="AddCategory" asp-route-eventId="@eventId" method="post">
-                        <div class="mb-2">
-                            <label class="form-label">Category Name</label>
-                            <input name="categoryName" class="form-control" required />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Category Name</label>
+                            <input name="categoryName" class="form-control" placeholder="e.g. Senior Men" required />
                         </div>
-                        <div class="mb-2">
-                            <label class="form-label">Description (Optional)</label>
-                            <input name="catDescription" class="form-control" />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Description (Optional)</label>
+                            <input name="catDescription" class="form-control" placeholder="e.g. Ages 20-39" />
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-2">
-                                <label class="form-label">Min Age</label>
-                                <input name="minAge" type="number" class="form-control" />
+                            <div class="col-6 mb-4">
+                                <label class="form-label fw-semibold">Min Age</label>
+                                <input name="minAge" type="number" class="form-control" placeholder="18" />
                             </div>
-                            <div class="col-6 mb-2">
-                                <label class="form-label">Max Age</label>
-                                <input name="maxAge" type="number" class="form-control" />
+                            <div class="col-6 mb-4">
+                                <label class="form-label fw-semibold">Max Age</label>
+                                <input name="maxAge" type="number" class="form-control" placeholder="39" />
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success w-100 mt-2">Add Category</button>
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Add Category</button>
                     </form>
                 </div>
             </div>
