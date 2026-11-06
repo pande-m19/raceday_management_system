@@ -14,56 +14,61 @@
     <div class="row">
         <!-- Picture Section -->
         <div class="col-md-4 text-center">
-            <div class="card shadow mb-4">
-                <div class="card-body">
-                    <!-- Uses default-profile.png if no image exists -->
+            <div class="card shadow mb-4 border-0">
+                <div class="card-body p-4">
                     <img src="@(string.IsNullOrEmpty(Model.Profile_picture_url) ? "/images/default-profile.png" : Model.Profile_picture_url)" 
                          class="rounded-circle img-fluid mb-3 shadow" 
                          alt="Profile Picture"
                          style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #e0e0e0;" />
                          
-                    <h4>@Model.Firstname @Model.Surname</h4>
-                    <p class="text-muted">@Model.Email</p>
+                    <h4 class="fw-bold">@Model.Firstname @Model.Surname</h4>
+                    <p class="text-muted mb-4">@Model.Email</p>
 
-                    <!-- ONLY show upload box if the user is a Participant -->
+                    <!-- ONLY show upload button if the user is a Participant -->
                     @if (Context.Session.GetString("Role") == "Participant")
                     {
                         <form asp-controller="profile" asp-action="UploadPicture" method="post" enctype="multipart/form-data">
-                            <div class="input-group">
-                                <input type="file" name="file" class="form-control form-control-sm" required accept="image/*" />
-                                <button type="submit" class="btn btn-primary btn-sm">Upload</button>
-                            </div>
+                            <!-- Hidden native file input -->
+                            <input type="file" name="file" id="profilePicUpload" required accept="image/*"
+                                   style="display: none;" onchange="this.form.submit();" />
+                                   
+                            <!-- Custom Blue Button that triggers the hidden input -->
+                            <label for="profilePicUpload" class="btn btn-primary w-100 py-2 fw-bold">
+                                Upload Profile
+                            </label>
                         </form>
                     }
                 </div>
             </div>
         </div>
 
-        <!-- Profile Edit Section -->
+        <!-- Profile Edit Section (Remains the same) -->
         <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-dark text-white">Edit Profile</div>
-                <div class="card-body">
+            <div class="card shadow border-0">
+                <div class="card-header bg-dark text-white rounded-top-4 py-3">
+                    <h5 class="mb-0 fw-bold">Edit Profile</h5>
+                </div>
+                <div class="card-body p-4">
                     <form asp-controller="profile" asp-action="Update" method="post">
                         <div class="row mb-3">
                             <div class="col">
-                                <label class="form-label">First Name</label>
+                                <label class="form-label fw-semibold">First Name</label>
                                 <input name="firstname" value="@Model.Firstname" class="form-control" required />
                             </div>
                             <div class="col">
-                                <label class="form-label">Surname</label>
+                                <label class="form-label fw-semibold">Surname</label>
                                 <input name="surname" value="@Model.Surname" class="form-control" required />
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Phone Number</label>
+                            <label class="form-label fw-semibold">Phone Number</label>
                             <input name="phoneNumber" value="@Model.Phone_number" class="form-control" />
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Date of Birth</label>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Date of Birth</label>
                             <input name="dateOfBirth" type="date" value="@Model.Date_of_birth?.ToString("yyyy-MM-dd")" class="form-control" />
                         </div>
-                        <button type="submit" class="btn btn-success w-100">Save Changes</button>
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold fs-5">Save Changes</button>
                     </form>
                 </div>
             </div>
