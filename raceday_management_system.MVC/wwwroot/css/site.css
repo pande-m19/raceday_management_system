@@ -109,8 +109,10 @@ body {
     font-weight: 800;
     color: #0d6efd !important;
     letter-spacing: -0.5px;
+    padding-left: 25px; /* Gives space for the lines behind the logo */
 }
 
+/* --- speed lines for the logo image --- */
 .logo-container {
     background-color: transparent;
     width: 45px;
@@ -118,13 +120,115 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px;
+    margin-right: 5px;
+    position: relative; /* Required for the lines */
 }
+
+    .logo-container::before {
+        content: '';
+        position: absolute;
+        left: -2px; /* Sits right behind the runner */
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 20px;
+        /* 5 lines trailing the logo */
+        background-image: linear-gradient(to right, transparent, #111), linear-gradient(to right, transparent, #111), linear-gradient(to right, transparent, #111), linear-gradient(to right, transparent, #111), linear-gradient(to right, transparent, #111);
+        background-size: 100% 2px, 80% 2px, 60% 2px, 40% 2px, 20% 2px;
+        background-position: 0% 0%, 0% 25%, 0% 50%, 0% 75%, 0% 100%;
+        background-repeat: no-repeat;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
 
     .logo-container img {
         height: 35px;
         width: auto;
+        position: relative; /* Ensures the image stays above the lines */
+        z-index: 1;
     }
+
+/* --- speed lines for logo text --- */
+.brand-text {
+    position: relative;
+    display: inline-block;
+    margin-left: 18px;
+}
+
+    /* 5 lines behind the R */
+    .brand-text::before {
+        content: '';
+        position: absolute;
+        left: -14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 20px;
+        /* 5 lines fading to the left */
+        background-image: linear-gradient(to left, #0d6efd, transparent), linear-gradient(to left, #0d6efd, transparent), linear-gradient(to left, #0d6efd, transparent), linear-gradient(to left, #0d6efd, transparent), linear-gradient(to left, #0d6efd, transparent);
+        background-size: 100% 2px, 80% 2px, 60% 2px, 40% 2px, 20% 2px;
+        background-position: 100% 0%, 100% 25%, 100% 50%, 100% 75%, 100% 100%;
+        background-repeat: no-repeat;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+/* The long line from the 'y' reaching back to the R */
+.brand-y {
+    position: relative;
+    display: inline-block;
+}
+
+    .brand-y::after {
+        content: '';
+        position: absolute;
+        right: -4px; /* Extends slightly to the right to touch the tail of the 'y' */
+        bottom: -2px; /* Drops down slightly to align perfectly with the tail */
+        width: 85px; /* Stretches all the way to the R */
+        height: 2px;
+        /* Gradient fading to the left */
+        background: linear-gradient(to left, #0d6efd 10%, transparent);
+        z-index: -1; /* Keeps it behind the text */
+        transition: all 0.3s ease;
+    }
+
+/* Lines trailing before the 'D' */
+.brand-text::after {
+    content: '';
+    position: absolute;
+    left: 54%;
+    top: 10%;
+    width: 12px;
+    height: 12px;
+    /* 3 smaller lines trailing the D */
+    background-image: linear-gradient(to right, transparent, #0d6efd), linear-gradient(to right, transparent, #0d6efd), linear-gradient(to right, transparent, #0d6efd);
+    background-size: 100% 2px, 70% 2px, 40% 2px;
+    background-position: 0% 0%, 0% 50%, 0% 100%;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+/* Make the lines stretch when you hover over the logo */
+.navbar-brand:hover .logo-container::before {
+    left: -8px;
+    opacity: 1;
+}
+
+.navbar-brand:hover .brand-text::before {
+    left: -20px;
+    opacity: 1;
+}
+
+.navbar-brand:hover .brand-y::after {
+    width: 95px; /* Stretches even further on hover */
+    opacity: 1;
+}
+
+.navbar-brand:hover .brand-text::after {
+    left: 51%;
+    opacity: 1;
+}
 
 .nav-link {
     font-weight: 500;

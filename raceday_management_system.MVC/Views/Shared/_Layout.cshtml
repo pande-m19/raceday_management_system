@@ -5,25 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RaceDay</title>
 
-    <!-- Bootstrap & Custom CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/raceday_management_system.MVC.styles.css" asp-append-version="true" />
-
-    <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
     <header>
-        <!-- Added sticky-top for a modern scrolling experience -->
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 sticky-top">
             <div class="container-fluid px-4">
-                <!-- Brand Logo (Clicking this goes Home) -->
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <div class="logo-container">
                         <img src="~/images/logo.png" alt="RaceDay Logo" />
                     </div>
-                    RaceDay
+                    <!-- Updated to wrap the 'y' for the speed line -->
+                    <span class="brand-text">RaceDa<span class="brand-y">y</span></span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -33,8 +29,6 @@
 
                     <!-- Left Side Navigation -->
                     <ul class="navbar-nav flex-grow-1 ms-4">
-
-                        <!-- All Events (Visible to everyone logged in) -->
                         @if (Context.Session.GetString("User_id") != null)
                         {
                             <li class="nav-item me-3">
@@ -42,7 +36,6 @@
                             </li>
                         }
 
-                        <!-- Role-Specific Links -->
                         @if (Context.Session.GetString("Role") == "Organiser")
                         {
                             <li class="nav-item me-3">
@@ -64,9 +57,7 @@
                     <ul class="navbar-nav align-items-center">
                         @if (Context.Session.GetString("User_id") != null)
                         {
-                            <!-- User is logged in -->
                             <li class="nav-item me-3">
-                                <!-- Profile Picture linking to Profile page -->
                                 <a asp-controller="profile" asp-action="Index" class="nav-link p-0" title="My Profile">
                                     <img src="@(Context.Session.GetString("ProfilePicture") ?? "/images/default-profile.png")"
                                          alt="Profile"
@@ -82,7 +73,6 @@
                         }
                         else
                         {
-                            <!-- User is logged out -->
                             <li class="nav-item me-2">
                                 <a class="btn btn-outline-primary px-4 rounded-pill fw-bold" asp-controller="Auth" asp-action="Login">Login</a>
                             </li>

@@ -43,8 +43,9 @@
                     <div class="mb-3">
                         <label asp-for="Role" class="form-label fw-semibold">I am registering as a:</label>
                         <select asp-for="Role" class="form-select">
-                            <option value="Participant">Participant (Join events)</option>
-                            <option value="Organiser">Organiser (Create events)</option>
+                            <!-- UPDATED: Removed the bracketed text -->
+                            <option value="Participant">Participant</option>
+                            <option value="Organiser">Organiser</option>
                         </select>
                         <span asp-validation-for="Role" class="text-danger small"></span>
                     </div>
@@ -63,7 +64,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100 py-2 fs-5">Register</button>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fs-5">Register</button>
                 </form>
 
                 <div class="text-center mt-4">
