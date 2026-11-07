@@ -502,7 +502,7 @@ docker rm raceday-mvc-container
 
 ## 🎥 Part 3 Video Presentation
 
-**YouTube Link:** https://youtu.be/5k9dgMO1HKI
+**YouTube Link:** https://youtu.be/ECUX3fwR3DE
 
 ---
 
