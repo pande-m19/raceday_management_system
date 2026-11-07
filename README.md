@@ -395,7 +395,7 @@ raceday_management_system.MVC/
 │   └── api_service.cs                    # HttpClient wrapper for API communication
 ├── Views/
 │   ├── Auth/                             # Login.cshtml, Register.cshtml
-│   ├── Events/                           # Details.cshtml (with enrol button)
+│   ├── Events/                           # Details.cshtml, AllEvents.cshtml
 │   ├── Home/                             # Index.cshtml (Hero banner & event grid)
 │   ├── Organiser/                        # Dashboard, CreateEvent, EditEvent, 
 │   │                                     # ManageCategories, EventEnrolments, 
@@ -405,11 +405,10 @@ raceday_management_system.MVC/
 │   └── Shared/                           # _Layout.cshtml (Navbar, Session logic)
 ├── wwwroot/
 │   ├── css/site.css                      # Custom RaceDay branding & Flexbox footer
-│   └── images/                           # logo.png, default-profile.png, hero-bg.jpeg
+│   └── images/                           # logo.png, default-profile.png, hero-bg.jpeg, icons/
 ├── appsettings.json                      # API Base URL Configuration
 ├── Dockerfile                            # Multi-stage build for containerization
 └── Program.cs                            # DI registration, Sessions, HttpClient setup
-```
 
 ---
 
@@ -503,7 +502,7 @@ docker rm raceday-mvc-container
 
 ## 🎥 Part 3 Video Presentation
 
-**YouTube Link:** [INSERT YOUR PART 3 YOUTUBE LINK HERE]
+**YouTube Link:** https://youtu.be/5k9dgMO1HKI
 
 ---
 
@@ -545,14 +544,14 @@ docker rm raceday-mvc-container
 
 ## 🔗 GitHub Repository
 
-**Repository Link:** https://github.com/pande26/raceday_management_system.git
+**Repository Link:** https://github.com/pande-m19/raceday_management_system.git
 
 ---
 
 ## 👨‍💻 Author
 
 **Pandelani**
-- GitHub: [@pande26](https://github.com/pande26)
+- GitHub: [@pande-m19](https://github.com/pande-m19)
 
 ---
 
